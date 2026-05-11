@@ -502,34 +502,44 @@ window.showLobby = function() {
     window.syncLeaderboard();
 };
 
-window.syncLeaderboard = function() {
-    console.log("Sincronizzazione classifica in corso...");
-    onValue(ref(db, 'players'), (snap) => {
-        try {
-            if (snap.exists()) {
-                const list = Object.entries(snap.val())
-                    .map(([n, s]) => ({ n, ...s }))
-                    .sort((a,b) => b.win - a.win);
-                
-                console.log("Dati ricevuti:", list.length, "giocatori");
-                elements.leaderboardBody.innerHTML = list.map(p => `
-                    <tr>
-                        <td>${p.n}</td>
-                        <td style="color:var(--primary)">${p.win}</td>
-                        <td style="color:var(--hp-color)">${p.loss}</td>
-                    </tr>
-                `).join('');
+window.syncLeaderboard = async () => {
+    const lbTable = document.querySelector('#leaderboard-table tbody');
+    if(!lbTable) return;
+    console.log("Avvio sincronizzazione classifica...");
+    try {
+        const playersRef = ref(db, 'players');
+        onValue(playersRef, (snapshot) => {
+            let html = '';
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const sorted = Object.entries(data)
+                    .map(([name, stats]) => ({ name, ...stats }))
+                    .sort((a,b) => (b.win || 0) - (a.win || 0));
+
+                sorted.forEach(p => {
+                    html += `<tr><td>${p.name}</td><td style="color:var(--primary)">${p.win || 0}</td><td style="color:var(--hp-color)">${p.loss || 0}</td></tr>`;
+                });
             } else {
-                console.warn("Nessun dato trovato su Firebase (nodo players)");
-                elements.leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; opacity: 0.5;">Nessun dato</td></tr>';
+                html = '<tr><td colspan="3" style="text-align:center; padding: 20px; opacity: 0.5;">Nessun dato</td></tr>';
             }
-        } catch (err) {
-            console.error("Errore render classifica:", err);
-            elements.leaderboardBody.innerHTML = '<tr><td colspan="3" style="color:red">Errore caricamento</td></tr>';
-        }
-    }, (error) => {
-        console.error("Errore Firebase Database:", error);
-    });
+            lbTable.innerHTML = html;
+        }, (err) => {
+            console.error("Errore Database:", err);
+            lbTable.innerHTML = '<tr><td colspan="3" style="color:red">Errore Database</td></tr>';
+        });
+    } catch (e) {
+        console.error("Errore Leaderboard:", e);
+    }
+};
+
+window.onOnlineMode = () => {
+    document.getElementById('lobby-container').style.display = 'none';
+    document.getElementById('lobby-container').classList.remove('show-flex');
+    
+    const setup = document.getElementById('setup-overlay');
+    setup.style.display = 'flex';
+    setup.classList.remove('hidden');
+    setup.classList.add('show-flex');
 };
 
 window.logoutUser = () => { 
@@ -538,43 +548,18 @@ window.logoutUser = () => {
 };
 
 // --- GESTIONE MENU & PARTITA ---
-window.showOfflineMenu = () => {
-    document.getElementById('lobby-container').style.display = 'none';
-    document.getElementById('lobby-container').classList.remove('show-flex');
-    
-    elements.setupOverlay.style.display = 'flex';
-    elements.setupOverlay.classList.add('show-flex');
-    
-    document.getElementById('offline-setup').classList.remove('hidden');
-    document.getElementById('online-setup').classList.add('hidden');
-    document.getElementById('common-setup').classList.remove('hidden');
-    document.getElementById('btn-start-game').classList.remove('hidden');
-};
-
-window.showOnlineMenu = () => {
-    document.getElementById('lobby-container').style.display = 'none';
-    document.getElementById('lobby-container').classList.remove('show-flex');
-    
-    elements.setupOverlay.style.display = 'flex';
-    elements.setupOverlay.classList.add('show-flex');
-    
-    document.getElementById('online-setup').classList.remove('hidden');
-    document.getElementById('offline-setup').classList.add('hidden');
-    document.getElementById('common-setup').classList.remove('hidden');
-    document.getElementById('btn-start-game').classList.add('hidden');
-};
-
 window.backToLobby = () => {
-    elements.setupOverlay.style.display = 'none';
-    elements.setupOverlay.classList.remove('show-flex');
+    document.getElementById('setup-overlay').style.display = 'none';
+    document.getElementById('setup-overlay').classList.remove('show-flex');
     window.showLobby();
 };
 
 window.startGame = function(forcedMode = null) {
-    const mode = forcedMode || document.getElementById('mode-select').value;
+    console.log("Avvio gioco: " + (forcedMode || "Offline"));
+    const mode = forcedMode || "1v1";
     const personalities = { 
-        player1: document.getElementById('p1-pers').value, 
-        player2: document.getElementById('p2-pers').value, 
+        player1: "", 
+        player2: "", 
         player3: '', 
         player4: '' 
     };
@@ -586,15 +571,19 @@ window.startGame = function(forcedMode = null) {
     game.onParticle = spawnDamageParticles;
     
     // 1. Spegni la Lobby e Overlay
-    document.getElementById('lobby-container').classList.remove('show-flex');
-    document.getElementById('lobby-container').style.display = 'none';
-    elements.setupOverlay.classList.remove('show-flex');
-    elements.setupOverlay.style.display = 'none';
+    const lobby = document.getElementById('lobby-container');
+    lobby.classList.remove('show-flex');
+    lobby.style.display = 'none';
+    
+    const setup = document.getElementById('setup-overlay');
+    setup.classList.remove('show-flex');
+    setup.style.display = 'none';
 
     // 2. Accendi il Gioco
     const gameEl = document.querySelector('.game-container');
-    gameEl.style.display = 'grid'; // Layout originale
+    gameEl.style.display = 'grid'; 
     gameEl.classList.add('show-grid');
+    gameEl.classList.remove('hidden');
     document.body.classList.add('in-game');
     
     // 3. Forza il ridisegno

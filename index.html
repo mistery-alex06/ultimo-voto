@@ -35,23 +35,42 @@
                         <table id="leaderboard-table">
                             <thead>
                                 <tr>
-                                    <th>Giocatore</th>
-                                    <th>V</th>
-                                    <th>S</th>
+                                    <th>Player</th>
+                                    <th>W</th>
+                                    <th>L</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Injected by engine.js -->
+                                <!-- Sincronizzato da JS -->
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="actions-col">
-                    <h3 class="col-title">Menu di Gioco</h3>
+                <div class="modes-col">
+                    <h2 class="col-title">Seleziona Modalità</h2>
                     <div class="lobby-buttons">
-                        <button class="btn-restart" onclick="window.showOfflineMenu()" style="width: 100%; margin-bottom: 15px;">GIOCA OFFLINE (IA)</button>
-                        <button class="btn-restart" onclick="window.showOnlineMenu()" style="width: 100%; margin-bottom: 15px; background: var(--secondary);">MULTIGIOCATORE ONLINE</button>
-                        <button class="btn-restart" onclick="window.logoutUser()" style="width: 100%; margin-top: 20px; background: #ff4444; font-size: 0.8rem;">ESCI</button>
+                        <button class="btn-restart" onclick="window.startGame('1v1')" style="width: 100%; margin-bottom: 10px;">Offline 1v1</button>
+                        <button class="btn-restart" onclick="window.startGame('2v2')" style="width: 100%; margin-bottom: 10px;">Offline 2v2</button>
+                        <button class="btn-restart" onclick="window.onOnlineMode()" style="width: 100%; margin-bottom: 10px; background: var(--secondary);">Online Multiplayer</button>
+                        <button class="btn-restart" onclick="window.logoutUser()" style="width: 100%; margin-top: 15px; background: #ff4444; font-size: 0.8rem;">ESCI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETUP OVERLAY (Per Online/Personalità) -->
+    <div class="overlay hidden" id="setup-overlay">
+        <div class="modal setup-modal">
+            <h1>Impostazioni Multiplayer</h1>
+            <div id="level-2-menu">
+                <button class="btn-back" onclick="window.backToLobby()" style="margin-bottom: 15px;">&larr; Indietro</button>
+                <div class="setup-form">
+                    <div id="online-setup">
+                        <input type="text" id="room-code-input" placeholder="Codice Stanza" style="width: 100%; margin-bottom: 10px;" />
+                        <button class="btn-restart" onclick="window.createOnlineRoom()" style="width: 100%; margin-bottom: 5px;">CREA STANZA</button>
+                        <button class="btn-restart" onclick="window.joinOnlineRoom()" style="width: 100%;">UNISCITI</button>
+                        <div id="room-status" style="margin-top: 10px; color: var(--accent);"></div>
                     </div>
                 </div>
             </div>
@@ -60,7 +79,6 @@
 
     <!-- STEP 3: GAME CONTAINER -->
     <div class="game-container hidden">
-        <!-- THEME SELECTOR -->
         <div class="theme-selector">
             <button onclick="document.body.setAttribute('data-theme', 'dark')" title="Dark Theme">🌌</button>
             <button onclick="document.body.setAttribute('data-theme', 'light')" title="Light Theme">☀️</button>
@@ -105,59 +123,6 @@
                 </button>
             </div>
             <div class="hand" id="player-hand"></div>
-        </div>
-    </div>
-
-    <!-- SETUP OVERLAY -->
-    <div class="overlay hidden" id="setup-overlay">
-        <div class="modal setup-modal">
-            <h1>Impostazioni Partita</h1>
-            <div id="level-1-menu">
-                <!-- Se necessario -->
-            </div>
-            <div id="level-2-menu">
-                <button class="btn-back" onclick="window.backToLobby()" style="margin-bottom: 15px;">&larr; Indietro</button>
-                <div class="setup-form">
-                    <div id="offline-setup" class="hidden">
-                        <div class="setup-row">
-                            <label>Modalità:</label>
-                            <select id="mode-select" onchange="window.toggleOfflineMode()">
-                                <option value="1v1">1v1 contro IA</option>
-                                <option value="2v2">2v2 contro IA</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="common-setup" class="hidden">
-                        <div class="setup-row">
-                            <label>Personalità (Tu):</label>
-                            <select id="p1-pers">
-                                <option value="">Normale</option>
-                                <option value="Secchione">Secchione</option>
-                                <option value="Disperato">Disperato</option>
-                                <option value="Caotico">Caotico</option>
-                                <option value="Raccomandato">Raccomandato</option>
-                            </select>
-                        </div>
-                        <div class="setup-row hidden" id="setup-p2">
-                            <label>Personalità (Alleato):</label>
-                            <select id="p2-pers">
-                                <option value="">Normale</option>
-                                <option value="Secchione">Secchione</option>
-                                <option value="Disperato">Disperato</option>
-                                <option value="Caotico">Caotico</option>
-                                <option value="Raccomandato">Raccomandato</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="online-setup" class="hidden">
-                        <input type="text" id="room-code-input" placeholder="Codice Stanza" style="width: 100%; margin-bottom: 10px;" />
-                        <button class="btn-restart" onclick="window.createOnlineRoom()" style="width: 100%; margin-bottom: 5px;">CREA STANZA</button>
-                        <button class="btn-restart" onclick="window.joinOnlineRoom()" style="width: 100%;">UNISCITI</button>
-                        <div id="room-status" style="margin-top: 10px; color: var(--accent);"></div>
-                    </div>
-                </div>
-                <button class="btn-restart hidden" id="btn-start-game" onclick="window.startGame()">INIZIA</button>
-            </div>
         </div>
     </div>
 

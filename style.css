@@ -1373,17 +1373,18 @@ body {
     grid-template-columns: 0.8fr 1.2fr;
     gap: 2.5rem;
     flex: 1;
-    min-height: 0;
+    min-height: 300px; /* Altezza minima garantita */
 }
 
-.leaderboard-col {
-    background: rgba(0, 0, 0, 0.2);
+.leaderboard-col, .modes-col {
+    background: rgba(0, 0, 0, 0.4);
     border-radius: 1.2rem;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     border: 1px solid var(--glass-border);
-    min-height: 0;
+    min-height: 300px;
+    color: white !important; /* Forza visibilità testo */
 }
 
 .table-wrapper {
