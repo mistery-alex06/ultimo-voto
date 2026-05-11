@@ -462,46 +462,41 @@ const elements = {
 };
 
 // --- GESTIONE LOGIN & LOBBY ---
+function switchScreen(screenId) {
+    const screens = ['login-screen', 'lobby-container', 'game-container', 'setup-overlay'];
+    screens.forEach(id => {
+        const el = document.getElementById(id) || document.querySelector('.' + id);
+        if (el) {
+            el.classList.remove('active-screen');
+            el.classList.add('hidden');
+        }
+    });
+    const target = document.getElementById(screenId) || document.querySelector('.' + screenId);
+    if (target) {
+        target.classList.remove('hidden');
+        target.classList.add('active-screen');
+    }
+}
+
 window.onLoginSubmit = async () => {
-    console.log("LOGIN AVVIATO");
     const name = document.getElementById('username-input').value.trim();
-    if (!name) return alert('Metti un nome!');
-    
+    if (!name) return alert('Inserisci un nome!');
     sessionStorage.setItem('username', name);
     
-    // Mostra la lobby IMMEDIATAMENTE, non aspettare Firebase
-    const loginScreen = document.getElementById('login-screen');
-    const lobbyContainer = document.getElementById('lobby-container');
-    
-    if (loginScreen) {
-        loginScreen.classList.remove('show', 'show-flex');
-        loginScreen.classList.add('hidden');
-    }
-    if (lobbyContainer) {
-        lobbyContainer.classList.remove('hidden');
-        lobbyContainer.classList.add('show-flex');
-        const userDisp = document.getElementById('user-display');
-        if (userDisp) userDisp.innerText = "Giocatore: " + name;
-    }
-    
-    // Solo DOPO prova a connetterti a Firebase
+    // Switch immediato alla Lobby
+    switchScreen('lobby-container');
+    const userDisp = document.getElementById('user-display');
+    if (userDisp) userDisp.innerText = "Giocatore: " + name;
+
     try {
         const userRef = ref(db, 'players/' + name);
         const snap = await get(userRef);
-        if (!snap.exists()) {
-            await set(userRef, { win: 0, loss: 0 });
-        }
+        if (!snap.exists()) await set(userRef, { win: 0, loss: 0 });
         window.syncLeaderboard();
     } catch(e) { console.error("Firebase Error:", e); }
 };
 
-window.showLobby = () => {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('login-screen').classList.remove('show-flex');
-    document.getElementById('lobby-container').classList.remove('hidden');
-    document.getElementById('lobby-container').classList.add('show-flex');
-    window.syncLeaderboard();
-};
+window.showLobby = () => switchScreen('lobby-container');
 
 window.syncLeaderboard = async () => {
     const lbTable = document.querySelector('#leaderboard-table tbody');
@@ -515,13 +510,10 @@ window.syncLeaderboard = async () => {
                 const sorted = Object.entries(data)
                     .map(([name, stats]) => ({ name, ...stats }))
                     .sort((a,b) => (b.win || 0) - (a.win || 0));
-
                 sorted.forEach(p => {
                     html += `<tr><td>${p.name}</td><td>${p.win || 0}</td><td>${p.loss || 0}</td></tr>`;
                 });
-            } else {
-                html = '<tr><td colspan="3">Nessun dato</td></tr>';
-            }
+            } else { html = '<tr><td colspan="3">Nessun dato</td></tr>'; }
             lbTable.innerHTML = html;
         });
     } catch (e) { console.error("Errore Leaderboard:", e); }
@@ -532,18 +524,8 @@ window.logoutUser = () => {
     location.reload(); 
 };
 
-window.onOnlineMode = () => {
-    document.getElementById('lobby-container').classList.remove('show-flex');
-    document.getElementById('lobby-container').classList.add('hidden');
-    document.getElementById('setup-overlay').classList.remove('hidden');
-    document.getElementById('setup-overlay').classList.add('show-flex');
-};
-
-window.backToLobby = () => {
-    document.getElementById('setup-overlay').classList.remove('show-flex');
-    document.getElementById('setup-overlay').classList.add('hidden');
-    window.showLobby();
-};
+window.onOnlineMode = () => switchScreen('setup-overlay');
+window.backToLobby = () => switchScreen('lobby-container');
 
 window.startGame = function(forcedMode = null) {
     const mode = forcedMode || "1v1";
@@ -553,16 +535,8 @@ window.startGame = function(forcedMode = null) {
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
     
-    document.getElementById('lobby-container').classList.remove('show-flex');
-    document.getElementById('lobby-container').classList.add('hidden');
-    document.getElementById('setup-overlay').classList.remove('show-flex');
-    document.getElementById('setup-overlay').classList.add('hidden');
-    
-    const gameEl = document.querySelector('.game-container');
-    gameEl.classList.remove('hidden');
-    gameEl.classList.add('show-grid');
+    switchScreen('game-container');
     document.body.classList.add('in-game');
-    
     window.dispatchEvent(new Event('resize'));
     updateUI();
 };
