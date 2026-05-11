@@ -1,4 +1,4 @@
-name: Deploy su Altervista
+name: Deploy su Altervista con Cache Busting
 on:
   push:
     branches:
@@ -9,6 +9,13 @@ jobs:
     steps:
       - name: Checkout del codice
         uses: actions/checkout@v3
+
+      - name: Cache Busting (Auto-Version)
+        run: |
+          # Sostituisce .js con .js?v=TIMESTAMP e .css con .css?v=TIMESTAMP
+          TIMESTAMP=$(date +%s)
+          sed -i "s/\.js/\.js?v=$TIMESTAMP/g" index.html
+          sed -i "s/\.css/\.css?v=$TIMESTAMP/g" index.html
 
       - name: Caricamento via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
