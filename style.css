@@ -164,6 +164,7 @@ body {
 /* Classi di comando per l'attivazione degli stati */
 .active-screen-flex { display: flex !important; }
 .active-screen-block { display: block !important; }
+.game-container.active-screen-block { display: grid !important; }
 
 .overlay {
     background: rgba(0, 0, 0, 0.9);

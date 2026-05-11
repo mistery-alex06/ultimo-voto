@@ -695,3 +695,18 @@ function animateCardDraw() { /* logic preserved */ }
 function playActionAnimation() { /* logic preserved */ }
 function spawnDamageParticles() { /* logic preserved */ }
 
+// --- AVVIO APPLICAZIONE ---
+const initApp = () => {
+    console.log("App Initialization...");
+    if (window.switchScreen) {
+        window.switchScreen('login-screen');
+    } else {
+        console.error("switchScreen not defined!");
+    }
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
