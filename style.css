@@ -252,7 +252,7 @@ body {
     align-items: center;
     padding-top: 3.5rem;
     /* Match scoreboard padding */
-    margin-top: -10px;
+    margin-top: -28px;
     z-index: 5;
 }
 
@@ -444,11 +444,11 @@ body {
 }
 
 .card.back {
-    background: linear-gradient(135deg, #9aa5b4 0%, #6b7685 50%, #8a949f 100%);
-    background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    background: linear-gradient(135deg, #b0b8c1 0%, #7a8694 50%, #a3adb8 100%);
+    background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
     background-size: 20px 20px;
-    border: 1.5px solid rgba(212, 175, 55, 0.65);
-    box-shadow: 0 0 7px rgba(212, 175, 55, 0.22), inset 0 0 10px rgba(212, 175, 55, 0.07);
+    border: 2px solid rgba(212, 175, 55, 0.75);
+    box-shadow: 0 0 9px rgba(212, 175, 55, 0.28), inset 0 0 12px rgba(212, 175, 55, 0.08);
     cursor: default;
 }
 
