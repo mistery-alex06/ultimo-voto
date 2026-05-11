@@ -4,114 +4,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guerra all'Ultimo Voto</title>
+    <title>Guerra all’Ultimo Voto</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="guv.png">
 </head>
 
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="overlay active-screen-flex">
-        <div class="modal">
-            <h1>Guerra all'Ultimo Voto</h1>
-            <p>Inserisci il tuo nome per giocare</p>
-            <input type="text" id="username-input" placeholder="Nome utente..." maxlength="15">
-            <button id="login-btn" class="btn-restart" onclick="window.onLoginSubmit()">ENTRA</button>
+    <div class="game-container">
+        <!-- THEME SELECTOR -->
+        <div class="theme-selector">
+            <button onclick="document.body.setAttribute('data-theme', 'dark')" title="Dark Theme">🌌</button>
+            <button onclick="document.body.setAttribute('data-theme', 'light')" title="Light Theme">☀️</button>
+            <button onclick="document.body.setAttribute('data-theme', 'cyberpunk')" title="Cyberpunk Theme">🤖</button>
+            <button onclick="document.body.setAttribute('data-theme', 'nature')" title="Nature Theme">🌿</button>
+            <button onclick="document.body.setAttribute('data-theme', 'sunset')" title="Sunset Theme">🌇</button>
+            <button onclick="document.body.setAttribute('data-theme', 'ocean')" title="Ocean Theme">🌊</button>
+            <button onclick="document.body.setAttribute('data-theme', 'midnight')" title="Midnight Theme">🌑</button>
+            <button onclick="document.body.setAttribute('data-theme', 'desert')" title="Desert Theme">🏜️</button>
         </div>
-    </div>
 
-    <!-- LOBBY CONTAINER -->
-    <div id="lobby-container" class="overlay">
-        <div class="modal lobby-window">
-            <div class="lobby-grid">
-                <!-- SINISTRA: Classifica -->
-                <div class="leaderboard-col" style="flex: 1;">
-                    <h3>Classifica Globale</h3>
-                    <table id="leaderboard-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th>W</th>
-                                <th>L</th>
-                            </tr>
-                        </thead>
-                        <tbody><!-- Sincronizzata da JS --></tbody>
-                    </table>
-                </div>
-                <!-- DESTRA: Bottoni -->
-                <div class="modes-col" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                    <h3>Scegli Modalità</h3>
-                    <button class="btn-restart" onclick="window.startGame('1v1')">Offline 1v1</button>
-                    <button class="btn-restart" onclick="window.startGame('2v2')" style="margin: 10px 0;">Offline
-                        2v2</button>
-                    <button class="btn-restart" onclick="window.onOnlineMode()"
-                        style="background: var(--secondary);">Multiplayer Online</button>
-                    <button class="btn-restart" onclick="window.logoutUser()"
-                        style="background: #ff4444; margin-top: 20px; font-size: 0.8rem;">ESCI</button>
-                </div>
+        <!-- AI HAND (Hidden) -->
+        <div class="opponent-hand-container">
+            <div class="opponent-hand" id="opponent-hand"></div>
+        </div>
+
+        <!-- SCOREBOARD -->
+        <div class="scoreboard" id="scoreboard">
+            <!-- stats injected here dynamically -->
+        </div>
+
+        <div class="deck-container">
+            <div class="deck-count" id="deck-count">0</div>
+        </div> 
+
+        <!-- ARENA -->
+        <div class="arena">
+            <div id="turn-indicator" style="font-weight: 800; font-size: 1.5rem; text-transform: uppercase;">Inizia la
+                Partita</div>
+
+            <div class="played-cards" id="played-cards-area">
+                <!-- dynamic slots injected here -->
+            </div>
+        </div>
+
+        <!-- LOG -->
+        <div class="log-panel">
+            <div class="log-title">LOG AZIONI</div>
+            <div class="log-content" id="log-content">
+                <div class="log-entry">Benvenuti a Guerra all'Ultimo Voto!</div>
+            </div>
+        </div>
+        <!-- BOTTOM HAND -->
+        <div class="hand-container">
+            <div style="display: flex; gap: 20px; align-items: flex-end; margin-bottom: 10px;">
+                <div class="potions-container" id="player-potions"></div>
+                <button class="btn-attack" id="btn-attack" onclick="onAttackClicked()" style="display: none;">
+                    <div>⚔️</div>
+                    <div style="font-size: 0.8rem">ATTACCA!</div>
+                </button>
+                <button class="btn-attack" id="btn-pass" onclick="onPassClicked()"
+                    style="display: none; background: var(--secondary);">
+                    <div>⏭️</div>
+                    <div style="font-size: 0.8rem">PASSA</div>
+                </button>
+            </div>
+            <div class="hand" id="player-hand">
+                <!-- Cards injected here -->
             </div>
         </div>
     </div>
 
-    <!-- GAME CONTAINER -->
-    <div class="game-container hidden">
-        <div class="theme-selector">
-            <button onclick="document.body.setAttribute('data-theme', 'dark')">🌌</button>
-            <button onclick="document.body.setAttribute('data-theme', 'light')">☀️</button>
-            <button onclick="document.body.setAttribute('data-theme', 'cyberpunk')">🤖</button>
-        </div>
-        <div class="opponent-hand-container">
-            <div class="opponent-hand" id="opponent-hand"></div>
-        </div>
-        <div class="scoreboard" id="scoreboard"></div>
-        <div class="deck-container">
-            <div class="deck-count" id="deck-count">0</div>
-        </div>
-        <div class="arena">
-            <div id="turn-indicator">Inizia</div>
-            <div class="played-cards" id="played-cards-area"></div>
-        </div>
-        <div class="log-panel">
-            <div class="log-title">LOG</div>
-            <div class="log-content" id="log-content"></div>
-        </div>
-        <div class="hand-container">
-            <div id="player-potions"></div>
-            <button id="btn-attack" onclick="window.onAttackClicked()" style="display:none">ATTACCA</button>
-            <button id="btn-pass" onclick="window.onPassClicked()" style="display:none">PASSA</button>
-            <div class="hand" id="player-hand"></div>
-        </div>
-    </div>
-
     <!-- SETUP OVERLAY -->
-    <div id="setup-overlay" class="overlay hidden">
-        <div class="modal">
-            <h2>Multiplayer</h2>
-            <input type="text" id="room-code-input" placeholder="Codice Stanza">
-            <button onclick="window.createOnlineRoom()">CREA</button>
-            <button onclick="window.joinOnlineRoom()">UNISCITI</button>
-            <button onclick="window.backToLobby()">INDIETRO</button>
-            <div id="room-status"></div>
+    <div class="overlay show" id="setup-overlay">
+        <div class="modal setup-modal">
+            <h1>Impostazioni Partita</h1>
+
+            <div id="level-1-menu">
+                <button class="btn-restart" onclick="window.showOfflineMenu()" style="margin: 10px; width: 80%;">GIOCA
+                    OFFLINE</button>
+                <button class="btn-restart" onclick="window.showOnlineMenu()" style="margin: 10px; width: 80%;">GIOCA
+                    ONLINE</button>
+            </div>
+
+            <div id="level-2-menu" class="hidden">
+                <button class="btn-back" onclick="window.showLevel1()"
+                    style="margin-bottom: 15px; cursor: pointer; background: transparent; color: white; border: 1px solid white; padding: 5px 15px; border-radius: 5px;">&larr;
+                    Indietro</button>
+                <div class="setup-form" style="margin-top: 0;">
+
+                    <div id="offline-setup" class="hidden">
+                        <div class="setup-row">
+                            <label>Modalità:</label>
+                            <select id="mode-select" onchange="window.toggleOfflineMode()">
+                                <option value="1v1">1v1 contro IA</option>
+                                <option value="2v2">2v2 contro IA</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="common-setup" class="hidden">
+                        <div class="setup-row">
+                            <label>P1 Personalità (Tu):</label>
+                            <select id="p1-pers">
+                                <option value="">Nessuna / Normale</option>
+                                <option value="Secchione">Secchione (+20% Def, +10% Studio, -10% Atk)</option>
+                                <option value="Disperato">Disperato (+50% Atk se Vita < 300, -10% Def)</option>
+                                <option value="Caotico">Caotico (Effetti casuali)</option>
+                                <option value="Raccomandato">Raccomandato (+20% Autorità, 20% Evasione)</option>
+                            </select>
+                        </div>
+
+                        <div class="setup-row hidden" id="setup-p2">
+                            <label>P2 Personalità (Alleato):</label>
+                            <select id="p2-pers">
+                                <option value="">Nessuna / Normale</option>
+                                <option value="Secchione">Secchione (+20% Def, +10% Studio, -10% Atk)</option>
+                                <option value="Disperato">Disperato (+50% Atk se Vita < 300, -10% Def)</option>
+                                <option value="Caotico">Caotico (Effetti casuali)</option>
+                                <option value="Raccomandato">Raccomandato (+20% Autorità, 20% Evasione)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="online-setup" class="hidden"
+                        style="margin-top: 10px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px;">
+                        <label>Codice Stanza:</label>
+                        <input type="text" id="room-code-input" placeholder="Inserisci o attendi codice"
+                            style="padding: 5px; width: 100%; margin-bottom: 5px;" />
+                        <button class="btn-restart" id="btn-create-room" onclick="window.onCreateRoom()"
+                            style="font-size: 0.9rem; margin-bottom: 5px; width: 100%;">CREA STANZA</button>
+                        <button class="btn-restart" id="btn-join-room" onclick="window.onJoinRoom()"
+                            style="font-size: 0.9rem; width: 100%;">UNISCITI A STANZA</button>
+                        <div id="room-status" style="margin-top: 5px; color: var(--accent); font-weight: bold;"></div>
+                    </div>
+
+                </div>
+                <button class="btn-restart hidden" id="btn-start-offline" onclick="window.startGame()"
+                    style="width: 100%;">INIZIA PARTITA</button>
+            </div>
         </div>
     </div>
 
-    <!-- GAME OVER -->
-    <div id="game-over-overlay" class="overlay hidden">
+    <!-- GAME OVER MODAL -->
+    <div class="overlay" id="game-over-overlay">
         <div class="modal">
-            <h1 id="victory-text"></h1>
-            <button onclick="location.reload()">LOBBY</button>
+            <h1 id="victory-text">VITTORIA!</h1>
+            <button class="btn-restart" onclick="location.reload()">GIOCA ANCORA</button>
         </div>
     </div>
 
-    <!-- Firebase Compat SDK per caricamento locale senza CORS -->
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+    <!-- FLASH NEWS BANNER -->
+    <div id="flash-news-banner">FLASH NEWS!</div>
 
-    <!-- Librerie di Gioco -->
-    <script src="cards.js"></script>
-    <script src="potions.js"></script>
-    <script src="audio-manager.js"></script>
-    <script src="multiplayer.js"></script>
-    <script src="engine.js"></script>
+    <!-- SCRIPTS -->
+    <script type="module" src="engine.js"></script>
 </body>
 
 </html>

@@ -6,7 +6,7 @@
  * 61-90: Strategy/Special
  */
 
-const CARDS = [
+export const CARDS = [
   // --- DEFENSE CARDS (1-30) ---
   { id: 1, name: "Sbianchetto", type: "defense", value: 50, description: "+50 Difesa", effect: { def: 50 }, tags: ["Studio"], targetType: "ally" },
   { id: 2, name: "Ritiro Spirituale", type: "defense", value: 150, description: "+150 Difesa", effect: { def: 150 }, tags: ["Studio"], targetType: "ally" },
