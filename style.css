@@ -151,7 +151,9 @@ body {
 
 
 .hidden { display: none !important; }
-.show { display: flex !important; }
+.show-flex { display: flex !important; }
+.show-block { display: block !important; }
+.show-grid { display: grid !important; }
 
 .overlay {
     position: fixed;
@@ -170,12 +172,12 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    display: grid;
     grid-template-columns: minmax(17rem, 22rem) 1fr minmax(17rem, 22rem);
     grid-template-rows: auto auto 1fr auto;
     gap: 1rem;
     padding: 1rem;
     z-index: 5;
+    /* Display gestito via classi show-* o hidden */
 }
 
 .modal {

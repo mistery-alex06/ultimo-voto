@@ -470,15 +470,19 @@ window.onLoginSubmit = async () => {
     sessionStorage.setItem('username', name);
     
     // Mostra la lobby IMMEDIATAMENTE, non aspettare Firebase
-    document.getElementById('login-screen').classList.remove('show');
-    document.getElementById('login-screen').classList.add('hidden');
+    const loginScreen = document.getElementById('login-screen');
+    const lobbyContainer = document.getElementById('lobby-container');
     
-    const lobby = document.getElementById('lobby-container');
-    lobby.classList.remove('hidden');
-    lobby.classList.add('show');
-    
-    const userDisp = document.getElementById('user-display');
-    if (userDisp) userDisp.innerText = "Giocatore: " + name;
+    if (loginScreen) {
+        loginScreen.classList.remove('show', 'show-flex');
+        loginScreen.classList.add('hidden');
+    }
+    if (lobbyContainer) {
+        lobbyContainer.classList.remove('hidden');
+        lobbyContainer.classList.add('show-flex');
+        const userDisp = document.getElementById('user-display');
+        if (userDisp) userDisp.innerText = "Giocatore: " + name;
+    }
     
     // Solo DOPO prova a connetterti a Firebase
     try {
@@ -493,7 +497,9 @@ window.onLoginSubmit = async () => {
 
 window.showLobby = () => {
     document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('lobby-container').classList.add('show');
+    document.getElementById('login-screen').classList.remove('show-flex');
+    document.getElementById('lobby-container').classList.remove('hidden');
+    document.getElementById('lobby-container').classList.add('show-flex');
     window.syncLeaderboard();
 };
 
@@ -527,14 +533,14 @@ window.logoutUser = () => {
 };
 
 window.onOnlineMode = () => {
-    document.getElementById('lobby-container').classList.remove('show');
+    document.getElementById('lobby-container').classList.remove('show-flex');
     document.getElementById('lobby-container').classList.add('hidden');
     document.getElementById('setup-overlay').classList.remove('hidden');
-    document.getElementById('setup-overlay').classList.add('show');
+    document.getElementById('setup-overlay').classList.add('show-flex');
 };
 
 window.backToLobby = () => {
-    document.getElementById('setup-overlay').classList.remove('show');
+    document.getElementById('setup-overlay').classList.remove('show-flex');
     document.getElementById('setup-overlay').classList.add('hidden');
     window.showLobby();
 };
@@ -547,10 +553,14 @@ window.startGame = function(forcedMode = null) {
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
     
+    document.getElementById('lobby-container').classList.remove('show-flex');
     document.getElementById('lobby-container').classList.add('hidden');
+    document.getElementById('setup-overlay').classList.remove('show-flex');
     document.getElementById('setup-overlay').classList.add('hidden');
-    document.querySelector('.game-container').classList.remove('hidden');
-    document.querySelector('.game-container').classList.add('show');
+    
+    const gameEl = document.querySelector('.game-container');
+    gameEl.classList.remove('hidden');
+    gameEl.classList.add('show-grid');
     document.body.classList.add('in-game');
     
     window.dispatchEvent(new Event('resize'));
