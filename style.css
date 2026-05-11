@@ -154,28 +154,27 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
 }
 
-#lobby-container, .game-container {
+#lobby-container, .game-container, #login-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     display: none;
-    z-index: 100;
+    z-index: 2000;
 }
 
 .game-container {
-    display: none;
     grid-template-columns: minmax(17rem, 22rem) 1fr minmax(17rem, 22rem);
     grid-template-rows: auto auto 1fr auto;
     gap: 1rem;
@@ -186,6 +185,19 @@ body {
 .show { display: flex !important; }
 .show-flex { display: flex !important; justify-content: center; align-items: center; }
 .show-grid { display: grid !important; }
+
+.modal {
+    background: rgba(30, 41, 59, 0.9); /* Darker slate for better visibility */
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 2rem;
+    box-shadow: 0 25px 70px -15px rgba(0, 0, 0, 0.8);
+    padding: 2.5rem;
+    color: #ffffff;
+    z-index: 2100;
+    max-width: 95vw;
+    max-height: 95vh;
+}
 
 @media (max-width: 1200px) {
     .game-container {

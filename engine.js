@@ -503,22 +503,32 @@ window.showLobby = function() {
 };
 
 window.syncLeaderboard = function() {
+    console.log("Sincronizzazione classifica in corso...");
     onValue(ref(db, 'players'), (snap) => {
-        if (snap.exists()) {
-            const list = Object.entries(snap.val())
-                .map(([n, s]) => ({ n, ...s }))
-                .sort((a,b) => b.win - a.win);
-            
-            elements.leaderboardBody.innerHTML = list.map(p => `
-                <tr>
-                    <td>${p.n}</td>
-                    <td style="color:var(--primary)">${p.win}</td>
-                    <td style="color:var(--hp-color)">${p.loss}</td>
-                </tr>
-            `).join('');
-        } else {
-            elements.leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; opacity: 0.5;">Nessun dato</td></tr>';
+        try {
+            if (snap.exists()) {
+                const list = Object.entries(snap.val())
+                    .map(([n, s]) => ({ n, ...s }))
+                    .sort((a,b) => b.win - a.win);
+                
+                console.log("Dati ricevuti:", list.length, "giocatori");
+                elements.leaderboardBody.innerHTML = list.map(p => `
+                    <tr>
+                        <td>${p.n}</td>
+                        <td style="color:var(--primary)">${p.win}</td>
+                        <td style="color:var(--hp-color)">${p.loss}</td>
+                    </tr>
+                `).join('');
+            } else {
+                console.warn("Nessun dato trovato su Firebase (nodo players)");
+                elements.leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; opacity: 0.5;">Nessun dato</td></tr>';
+            }
+        } catch (err) {
+            console.error("Errore render classifica:", err);
+            elements.leaderboardBody.innerHTML = '<tr><td colspan="3" style="color:red">Errore caricamento</td></tr>';
         }
+    }, (error) => {
+        console.error("Errore Firebase Database:", error);
     });
 };
 
