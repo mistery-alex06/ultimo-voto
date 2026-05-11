@@ -1336,6 +1336,17 @@ body {
     padding: 3rem;
 }
 
+.modal {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    color: var(--text);
+    z-index: 1100;
+}
+
 .lobby-window {
     width: 90%;
     max-width: 900px;

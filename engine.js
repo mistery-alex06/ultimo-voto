@@ -496,6 +496,7 @@ window.showLobby = function() {
     // Rendi visibile la lobby
     const lobby = document.getElementById('lobby-container');
     lobby.style.display = 'flex';
+    lobby.classList.remove('hidden');
     lobby.classList.add('show-flex');
     
     window.syncLeaderboard();
