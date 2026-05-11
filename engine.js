@@ -564,10 +564,15 @@ window.startGame = function(forcedMode = null) {
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
     
+    // UI Transitions
     elements.setupOverlay.classList.remove('show');
     elements.setupOverlay.classList.add('hidden');
+    elements.lobbyContainer.classList.remove('show');
+    elements.lobbyContainer.classList.add('hidden');
+    
     elements.gameContainer.classList.remove('hidden');
     elements.gameContainer.classList.add('show');
+    document.body.classList.add('in-game');
     
     updateUI();
 };
