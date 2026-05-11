@@ -1059,11 +1059,13 @@ function renderHands(activePlayer) {
         });
     }
 
-    // Opponent Hand visually (just some cards)
+    // Opponent Hand visually (carte coperte con classe 'back')
     let aiHandCount = 0;
     game.teams['B'].forEach(id => aiHandCount += game.players[id].hand.length);
     for (let i = 0; i < Math.min(5, aiHandCount); i++) {
-        elements.oppHand.appendChild(createCardElement({}, false, true));
+        const div = document.createElement('div');
+        div.className = 'card back';
+        elements.oppHand.appendChild(div);
     }
 }
 
