@@ -442,6 +442,15 @@ body {
     display: none;
 }
 
+.card.back {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    box-shadow: 0 0 6px rgba(212, 175, 55, 0.18), inset 0 0 8px rgba(212, 175, 55, 0.06);
+    cursor: default;
+}
+
 .log-panel {
     grid-column: 3;
     grid-row: 2 / 5;
