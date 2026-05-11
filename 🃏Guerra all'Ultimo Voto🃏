@@ -1,0 +1,44 @@
+Questo repository contiene il codice sorgente completo di **Guerra all'Ultimo Voto**, un gioco di carte strategico 1v1 sviluppato interamente in ambiente Web. 
+Il progetto si focalizza sulla gestione dinamica dei turni, l'integrazione di temi grafici intercambiabili e una logica di gioco scalabile.
+
+---
+
+🏗️ Architettura del Sistema
+
+Il progetto è strutturato seguendo una logica modulare per separare la gestione dei dati (carte) dalla logica di calcolo (engine) e dalla presentazione (UI).
+
+📂 Struttura della Repository
+* `index.html`: Punto di ingresso dell'applicazione. Contiene il layout DOM, la Top Bar fissa per la navigazione e i container per il rendering dinamico delle carte.
+* `style.css`: Framework estetico basato su variabili CSS per supportare il cambio di tema in tempo reale senza ricaricare la pagina. Include le media queries per la responsività.
+* `engine.js`: Il motore core del gioco. Gestisce la macchina a stati (State Machine) per i turni, le animazioni di transizione e l'integrazione del log eventi.
+* `cards.js`: Database strutturato degli oggetti "Carta". Ogni carta è definita da attributi unici e identificatori per il calcolo delle statistiche.
+* `multiplayer.js`: Modulo dedicato alla sincronizzazione delle sessioni di gioco.
+
+---
+
+🚀 Pipeline di Continuous Deployment (CI/CD)
+
+Per questo progetto è stata implementata una pipeline di automazione avanzata che elimina la necessità di caricamenti manuali e garantisce la massima efficienza nello sviluppo.
+
+### Automazione con GitHub Actions
+Il file `.github/workflows/deploy.yml` orchestra l'intero processo di pubblicazione:
+1.  **Trigger:** Ogni operazione di `push` sul branch `main` avvia il workflow.
+2.  **Environment:** Viene istanziata una macchina virtuale Ubuntu per processare i file.
+3.  **Cache Busting Automatico:** Uno script `sed` interviene sull'HTML iniettando un *Unix Timestamp* univoco come parametro ai file JS e CSS. 
+      Questo forza il browser dell'utente a scaricare sempre la versione più recente, bypassando i problemi di cache locale.
+4.  **FTP Sync:** Il codice ottimizzato viene trasferito in modo sicuro sul server Altervista tramite protocollo crittografato.
+
+---
+
+🛠️ Note Tecniche per lo Sviluppo
+
+#Gestione dei Temi
+Il sistema utilizza classi CSS dinamiche applicate al tag `<body>`.
+I pulsanti nella Top Bar eseguono funzioni JavaScript che scambiano queste classi, garantendo una transizione fluida tra le diverse skin grafiche.
+
+Requisiti di Sistema
+- **Hosting:** Qualsiasi server con supporto FTP/SFTP (attualmente configurato per Altervista).
+- **Browser:** Compatibilità garantita con motori Chromium e WebKit (Chrome, Safari, Edge).
+
+---
+*Manutenzione a cura del Team di Sviluppo. Tutti i diritti riservati.* 🎓🦾
