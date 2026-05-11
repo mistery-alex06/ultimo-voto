@@ -486,10 +486,12 @@ window.showLobby = function() {
     const name = sessionStorage.getItem('username');
     if (elements.userDisplay) elements.userDisplay.innerText = "Giocatore: " + name;
     
-    document.getElementById('login-screen').classList.remove('show');
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('lobby-container').classList.remove('hidden');
-    document.getElementById('lobby-container').classList.add('show');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('login-screen').classList.remove('show-flex');
+    
+    const lobby = document.getElementById('lobby-container');
+    lobby.style.display = 'flex';
+    lobby.classList.add('show-flex');
     window.syncLeaderboard();
 };
 
@@ -520,10 +522,11 @@ window.logoutUser = () => {
 
 // --- GESTIONE MENU & PARTITA ---
 window.showOfflineMenu = () => {
-    elements.lobbyContainer.classList.remove('show');
-    elements.lobbyContainer.classList.add('hidden');
-    elements.setupOverlay.classList.remove('hidden');
-    elements.setupOverlay.classList.add('show');
+    document.getElementById('lobby-container').style.display = 'none';
+    document.getElementById('lobby-container').classList.remove('show-flex');
+    
+    elements.setupOverlay.style.display = 'flex';
+    elements.setupOverlay.classList.add('show-flex');
     
     document.getElementById('offline-setup').classList.remove('hidden');
     document.getElementById('online-setup').classList.add('hidden');
@@ -532,10 +535,11 @@ window.showOfflineMenu = () => {
 };
 
 window.showOnlineMenu = () => {
-    elements.lobbyContainer.classList.remove('show');
-    elements.lobbyContainer.classList.add('hidden');
-    elements.setupOverlay.classList.remove('hidden');
-    elements.setupOverlay.classList.add('show');
+    document.getElementById('lobby-container').style.display = 'none';
+    document.getElementById('lobby-container').classList.remove('show-flex');
+    
+    elements.setupOverlay.style.display = 'flex';
+    elements.setupOverlay.classList.add('show-flex');
     
     document.getElementById('online-setup').classList.remove('hidden');
     document.getElementById('offline-setup').classList.add('hidden');
@@ -544,8 +548,8 @@ window.showOnlineMenu = () => {
 };
 
 window.backToLobby = () => {
-    elements.setupOverlay.classList.remove('show');
-    elements.setupOverlay.classList.add('hidden');
+    elements.setupOverlay.style.display = 'none';
+    elements.setupOverlay.classList.remove('show-flex');
     window.showLobby();
 };
 
@@ -564,15 +568,20 @@ window.startGame = function(forcedMode = null) {
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
     
-    // UI Transitions
-    elements.setupOverlay.classList.remove('show');
-    elements.setupOverlay.classList.add('hidden');
-    elements.lobbyContainer.classList.remove('show');
-    elements.lobbyContainer.classList.add('hidden');
-    
-    elements.gameContainer.classList.remove('hidden');
-    elements.gameContainer.classList.add('show');
+    // 1. Spegni la Lobby e Overlay
+    document.getElementById('lobby-container').classList.remove('show-flex');
+    document.getElementById('lobby-container').style.display = 'none';
+    elements.setupOverlay.classList.remove('show-flex');
+    elements.setupOverlay.style.display = 'none';
+
+    // 2. Accendi il Gioco
+    const gameEl = document.querySelector('.game-container');
+    gameEl.style.display = 'grid'; // Layout originale
+    gameEl.classList.add('show-grid');
     document.body.classList.add('in-game');
+    
+    // 3. Forza il ridisegno
+    window.dispatchEvent(new Event('resize'));
     
     updateUI();
 };
