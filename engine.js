@@ -463,49 +463,43 @@ const elements = {
 
 // --- GESTIONE LOGIN & LOBBY ---
 window.onLoginSubmit = async () => {
+    console.log("LOGIN AVVIATO");
     const name = document.getElementById('username-input').value.trim();
-    if (!name) return alert('Inserisci un nome!');
+    if (!name) return alert('Metti un nome!');
     
     sessionStorage.setItem('username', name);
     
-    // Salvataggio/Inizializzazione su Firebase
-    const userRef = ref(db, 'players/' + name);
+    // Mostra la lobby IMMEDIATAMENTE, non aspettare Firebase
+    document.getElementById('login-screen').classList.remove('show');
+    document.getElementById('login-screen').classList.add('hidden');
+    
+    const lobby = document.getElementById('lobby-container');
+    lobby.classList.remove('hidden');
+    lobby.classList.add('show');
+    
+    const userDisp = document.getElementById('user-display');
+    if (userDisp) userDisp.innerText = "Giocatore: " + name;
+    
+    // Solo DOPO prova a connetterti a Firebase
     try {
-        const snapshot = await get(userRef);
-        if (!snapshot.exists()) {
+        const userRef = ref(db, 'players/' + name);
+        const snap = await get(userRef);
+        if (!snap.exists()) {
             await set(userRef, { win: 0, loss: 0 });
         }
-        window.showLobby();
-    } catch (e) {
-        console.error("Errore Firebase:", e);
-        alert("Errore di connessione al Cloud.");
-    }
+        window.syncLeaderboard();
+    } catch(e) { console.error("Firebase Error:", e); }
 };
 
-window.showLobby = function() {
-    console.log("Transizione alla Lobby...");
-    const name = sessionStorage.getItem('username');
-    if (elements.userDisplay) elements.userDisplay.innerText = "Giocatore: " + name;
-    
-    // Rendi invisibile il login
-    const login = document.getElementById('login-screen');
-    login.style.display = 'none';
-    login.classList.remove('show');
-    login.classList.remove('show-flex');
-    
-    // Rendi visibile la lobby
-    const lobby = document.getElementById('lobby-container');
-    lobby.style.display = 'flex';
-    lobby.classList.remove('hidden');
-    lobby.classList.add('show-flex');
-    
+window.showLobby = () => {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('lobby-container').classList.add('show');
     window.syncLeaderboard();
 };
 
 window.syncLeaderboard = async () => {
     const lbTable = document.querySelector('#leaderboard-table tbody');
     if(!lbTable) return;
-    console.log("Avvio sincronizzazione classifica...");
     try {
         const playersRef = ref(db, 'players');
         onValue(playersRef, (snapshot) => {
@@ -517,29 +511,14 @@ window.syncLeaderboard = async () => {
                     .sort((a,b) => (b.win || 0) - (a.win || 0));
 
                 sorted.forEach(p => {
-                    html += `<tr><td>${p.name}</td><td style="color:var(--primary)">${p.win || 0}</td><td style="color:var(--hp-color)">${p.loss || 0}</td></tr>`;
+                    html += `<tr><td>${p.name}</td><td>${p.win || 0}</td><td>${p.loss || 0}</td></tr>`;
                 });
             } else {
-                html = '<tr><td colspan="3" style="text-align:center; padding: 20px; opacity: 0.5;">Nessun dato</td></tr>';
+                html = '<tr><td colspan="3">Nessun dato</td></tr>';
             }
             lbTable.innerHTML = html;
-        }, (err) => {
-            console.error("Errore Database:", err);
-            lbTable.innerHTML = '<tr><td colspan="3" style="color:red">Errore Database</td></tr>';
         });
-    } catch (e) {
-        console.error("Errore Leaderboard:", e);
-    }
-};
-
-window.onOnlineMode = () => {
-    document.getElementById('lobby-container').style.display = 'none';
-    document.getElementById('lobby-container').classList.remove('show-flex');
-    
-    const setup = document.getElementById('setup-overlay');
-    setup.style.display = 'flex';
-    setup.classList.remove('hidden');
-    setup.classList.add('show-flex');
+    } catch (e) { console.error("Errore Leaderboard:", e); }
 };
 
 window.logoutUser = () => { 
@@ -547,48 +526,34 @@ window.logoutUser = () => {
     location.reload(); 
 };
 
-// --- GESTIONE MENU & PARTITA ---
+window.onOnlineMode = () => {
+    document.getElementById('lobby-container').classList.remove('show');
+    document.getElementById('lobby-container').classList.add('hidden');
+    document.getElementById('setup-overlay').classList.remove('hidden');
+    document.getElementById('setup-overlay').classList.add('show');
+};
+
 window.backToLobby = () => {
-    document.getElementById('setup-overlay').style.display = 'none';
-    document.getElementById('setup-overlay').classList.remove('show-flex');
+    document.getElementById('setup-overlay').classList.remove('show');
+    document.getElementById('setup-overlay').classList.add('hidden');
     window.showLobby();
 };
 
 window.startGame = function(forcedMode = null) {
-    console.log("Avvio gioco: " + (forcedMode || "Offline"));
     const mode = forcedMode || "1v1";
-    const personalities = { 
-        player1: "", 
-        player2: "", 
-        player3: '', 
-        player4: '' 
-    };
-    
-    game = new Game(CARDS, mode, personalities, forcedMode === 'multiplayer');
+    game = new Game(CARDS, mode, {}, forcedMode === 'multiplayer');
     game.onUpdate = updateUI;
     game.onCardDraw = animateCardDraw;
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
     
-    // 1. Spegni la Lobby e Overlay
-    const lobby = document.getElementById('lobby-container');
-    lobby.classList.remove('show-flex');
-    lobby.style.display = 'none';
-    
-    const setup = document.getElementById('setup-overlay');
-    setup.classList.remove('show-flex');
-    setup.style.display = 'none';
-
-    // 2. Accendi il Gioco
-    const gameEl = document.querySelector('.game-container');
-    gameEl.style.display = 'grid'; 
-    gameEl.classList.add('show-grid');
-    gameEl.classList.remove('hidden');
+    document.getElementById('lobby-container').classList.add('hidden');
+    document.getElementById('setup-overlay').classList.add('hidden');
+    document.querySelector('.game-container').classList.remove('hidden');
+    document.querySelector('.game-container').classList.add('show');
     document.body.classList.add('in-game');
     
-    // 3. Forza il ridisegno
     window.dispatchEvent(new Event('resize'));
-    
     updateUI();
 };
 
