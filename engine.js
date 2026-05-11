@@ -461,30 +461,30 @@ const elements = {
     leaderboardBody: document.querySelector('#leaderboard-table tbody')
 };
 
-// --- GESTIONE LOGIN & LOBBY ---
-function switchScreen(screenId) {
-    const screens = ['login-screen', 'lobby-container', 'game-container', 'setup-overlay'];
-    screens.forEach(id => {
-        const el = document.getElementById(id) || document.querySelector('.' + id);
-        if (el) {
-            el.classList.remove('active-screen');
-            el.classList.add('hidden');
-        }
-    });
+// --- PROTOCOLLO STATI UI ---
+window.switchScreen = (screenId, displayType = 'active-screen-flex') => {
+    // Nascondi tutto pulendo le classi dei container principali
+    const login = document.getElementById('login-screen');
+    const lobby = document.getElementById('lobby-container');
+    const game = document.querySelector('.game-container');
+    const setup = document.getElementById('setup-overlay');
+    
+    if (login) login.className = 'overlay';
+    if (lobby) lobby.className = 'overlay';
+    if (game) game.className = 'game-container';
+    if (setup) setup.className = 'overlay';
+    
+    // Mostra solo quello che serve
     const target = document.getElementById(screenId) || document.querySelector('.' + screenId);
-    if (target) {
-        target.classList.remove('hidden');
-        target.classList.add('active-screen');
-    }
-}
+    if (target) target.classList.add(displayType);
+};
 
 window.onLoginSubmit = async () => {
     const name = document.getElementById('username-input').value.trim();
     if (!name) return alert('Inserisci un nome!');
     sessionStorage.setItem('username', name);
     
-    // Switch immediato alla Lobby
-    switchScreen('lobby-container');
+    window.switchScreen('lobby-container');
     const userDisp = document.getElementById('user-display');
     if (userDisp) userDisp.innerText = "Giocatore: " + name;
 
@@ -496,7 +496,7 @@ window.onLoginSubmit = async () => {
     } catch(e) { console.error("Firebase Error:", e); }
 };
 
-window.showLobby = () => switchScreen('lobby-container');
+window.showLobby = () => window.switchScreen('lobby-container');
 
 window.syncLeaderboard = async () => {
     const lbTable = document.querySelector('#leaderboard-table tbody');
@@ -524,10 +524,11 @@ window.logoutUser = () => {
     location.reload(); 
 };
 
-window.onOnlineMode = () => switchScreen('setup-overlay');
-window.backToLobby = () => switchScreen('lobby-container');
+window.onOnlineMode = () => window.switchScreen('setup-overlay');
+window.backToLobby = () => window.switchScreen('lobby-container');
 
 window.startGame = function(forcedMode = null) {
+    window.switchScreen('game-container', 'active-screen-block');
     const mode = forcedMode || "1v1";
     game = new Game(CARDS, mode, {}, forcedMode === 'multiplayer');
     game.onUpdate = updateUI;
@@ -535,7 +536,6 @@ window.startGame = function(forcedMode = null) {
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
     
-    switchScreen('game-container');
     document.body.classList.add('in-game');
     window.dispatchEvent(new Event('resize'));
     updateUI();

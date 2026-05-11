@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="overlay active-screen">
+    <div id="login-screen" class="overlay">
         <div class="modal">
             <h1>Guerra all'Ultimo Voto</h1>
             <p>Inserisci il tuo nome per giocare</p>
@@ -18,28 +18,24 @@
     </div>
 
     <!-- LOBBY CONTAINER -->
-    <div id="lobby-container" class="overlay hidden">
+    <div id="lobby-container" class="overlay">
         <div class="modal lobby-window">
-            <div class="lobby-header">
-                <h2>Lobby Cloud</h2>
-                <div id="user-display"></div>
-            </div>
-            <div class="lobby-grid">
-                <div class="leaderboard-col">
+            <div class="lobby-grid" style="display: flex; gap: 40px; min-height: 350px;">
+                <!-- SINISTRA: Classifica -->
+                <div class="leaderboard-col" style="flex: 1;">
                     <h3>Classifica Globale</h3>
-                    <table id="leaderboard-table">
-                        <thead>
-                            <tr><th>Player</th><th>W</th><th>L</th></tr>
-                        </thead>
-                        <tbody></tbody>
+                    <table id="leaderboard-table" style="width: 100%;">
+                        <thead><tr><th>Player</th><th>W</th><th>L</th></tr></thead>
+                        <tbody><!-- Sincronizzata da JS --></tbody>
                     </table>
                 </div>
-                <div class="modes-col">
+                <!-- DESTRA: Bottoni -->
+                <div class="modes-col" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                     <h3>Scegli Modalità</h3>
                     <button class="btn-restart" onclick="window.startGame('1v1')">Offline 1v1</button>
-                    <button class="btn-restart" onclick="window.startGame('2v2')">Offline 2v2</button>
-                    <button class="btn-restart" onclick="window.onOnlineMode()">Online Multiplayer</button>
-                    <button class="btn-restart" onclick="window.logoutUser()" style="background: #ff4444; margin-top: 20px;">ESCI</button>
+                    <button class="btn-restart" onclick="window.startGame('2v2')" style="margin: 10px 0;">Offline 2v2</button>
+                    <button class="btn-restart" onclick="window.onOnlineMode()" style="background: var(--secondary);">Multiplayer Online</button>
+                    <button class="btn-restart" onclick="window.logoutUser()" style="background: #ff4444; margin-top: 20px; font-size: 0.8rem;">ESCI</button>
                 </div>
             </div>
         </div>
