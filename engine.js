@@ -1,11 +1,7 @@
 /**
  * Engine for "Guerra all’Ultimo Voto"
+ * Refactored to run as a standard script without CORS blocks.
  */
-
-import { POTIONS } from './potions.js';
-import { CARDS } from './cards.js';
-import { createRoom, joinRoom, updateGameState, isHost, currentRoom, db, ref, set, onValue, get, update } from './multiplayer.js';
-import { AudioManager } from './audio-manager.js';
 
 const RANDOM_EVENTS = [
     { id: 'ISPEZIONE_MINISTERIALE', name: 'ISPEZIONE MINISTERIALE', type: 'cost_modifier', target: 'special_cards', duration: 1 },
@@ -21,7 +17,7 @@ export class Game {
 
     reset(mode = '1v1', personalities = {}, isMultiplayer = false) {
         this.isMultiplayer = isMultiplayer;
-        this.localPlayerId = 'player1'; 
+        this.localPlayerId = 'player1';
         this.gameMode = mode;
         this.sharedDeck = this.shuffle([...this.allCards]);
         this.sharedDiscard = [];
@@ -411,7 +407,7 @@ export class Game {
             this.gameOver = true;
             const winnerTeam = teamAAlive ? 'A' : 'B';
             this.addToLog(winnerTeam === 'A' ? `VITTORIA! Il Team A ha vinto.` : `SCONFITTA! Il Team B ha vinto.`);
-            
+
             // Firebase Stats Update
             const username = sessionStorage.getItem('username');
             if (username) {
@@ -468,12 +464,12 @@ window.switchScreen = (screenId, displayType = 'active-screen-flex') => {
     const lobby = document.getElementById('lobby-container');
     const game = document.querySelector('.game-container');
     const setup = document.getElementById('setup-overlay');
-    
+
     if (login) login.className = 'overlay';
     if (lobby) lobby.className = 'overlay';
     if (game) game.className = 'game-container';
     if (setup) setup.className = 'overlay';
-    
+
     // Mostra solo quello che serve
     const target = document.getElementById(screenId) || document.querySelector('.' + screenId);
     if (target) target.classList.add(displayType);
@@ -483,7 +479,7 @@ window.onLoginSubmit = async () => {
     const name = document.getElementById('username-input').value.trim();
     if (!name) return alert('Inserisci un nome!');
     sessionStorage.setItem('username', name);
-    
+
     window.switchScreen('lobby-container');
     const userDisp = document.getElementById('user-display');
     if (userDisp) userDisp.innerText = "Giocatore: " + name;
@@ -493,14 +489,14 @@ window.onLoginSubmit = async () => {
         const snap = await get(userRef);
         if (!snap.exists()) await set(userRef, { win: 0, loss: 0 });
         window.syncLeaderboard();
-    } catch(e) { console.error("Firebase Error:", e); }
+    } catch (e) { console.error("Firebase Error:", e); }
 };
 
 window.showLobby = () => window.switchScreen('lobby-container');
 
 window.syncLeaderboard = async () => {
     const lbTable = document.querySelector('#leaderboard-table tbody');
-    if(!lbTable) return;
+    if (!lbTable) return;
     try {
         const playersRef = ref(db, 'players');
         onValue(playersRef, (snapshot) => {
@@ -509,7 +505,7 @@ window.syncLeaderboard = async () => {
                 const data = snapshot.val();
                 const sorted = Object.entries(data)
                     .map(([name, stats]) => ({ name, ...stats }))
-                    .sort((a,b) => (b.win || 0) - (a.win || 0));
+                    .sort((a, b) => (b.win || 0) - (a.win || 0));
                 sorted.forEach(p => {
                     html += `<tr><td>${p.name}</td><td>${p.win || 0}</td><td>${p.loss || 0}</td></tr>`;
                 });
@@ -519,15 +515,15 @@ window.syncLeaderboard = async () => {
     } catch (e) { console.error("Errore Leaderboard:", e); }
 };
 
-window.logoutUser = () => { 
-    sessionStorage.removeItem('username'); 
-    location.reload(); 
+window.logoutUser = () => {
+    sessionStorage.removeItem('username');
+    location.reload();
 };
 
 window.onOnlineMode = () => window.switchScreen('setup-overlay');
 window.backToLobby = () => window.switchScreen('lobby-container');
 
-window.startGame = function(forcedMode = null) {
+window.startGame = function (forcedMode = null) {
     window.switchScreen('game-container', 'active-screen-block');
     const mode = forcedMode || "1v1";
     game = new Game(CARDS, mode, {}, forcedMode === 'multiplayer');
@@ -535,7 +531,7 @@ window.startGame = function(forcedMode = null) {
     game.onCardDraw = animateCardDraw;
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
-    
+
     document.body.classList.add('in-game');
     window.dispatchEvent(new Event('resize'));
     updateUI();
@@ -563,9 +559,9 @@ window.onCardClicked = (idx) => {
 // --- MULTIPLAYER ONLINE ---
 window.createOnlineRoom = async () => {
     try {
-        const code = await createRoom(game ? game.getSerializableState() : {}, (s) => { 
-            if(game) game.loadState(s); 
-            updateUI(); 
+        const code = await createRoom(game ? game.getSerializableState() : {}, (s) => {
+            if (game) game.loadState(s);
+            updateUI();
         });
         document.getElementById('room-code-input').value = code;
         document.getElementById('room-status').innerText = "Stanza creata! Codice: " + code;
@@ -577,9 +573,9 @@ window.createOnlineRoom = async () => {
 window.joinOnlineRoom = async () => {
     const code = document.getElementById('room-code-input').value.trim();
     if (!code) return alert("Inserisci un codice!");
-    const success = await joinRoom(code, (s) => { 
-        if(game) game.loadState(s); 
-        updateUI(); 
+    const success = await joinRoom(code, (s) => {
+        if (game) game.loadState(s);
+        updateUI();
     });
     if (success) {
         window.startGame('multiplayer');
@@ -604,18 +600,18 @@ function updateUI() {
     buildArena();
     elements.indicator.innerText = targetingMode ? "Seleziona Bersaglio!" : (active.isAI ? "Turno del Prof" : "Tuo Turno");
     elements.log.innerHTML = game.log.slice().reverse().map(m => `<div class="log-entry">${m}</div>`).join('');
-    
+
     const attackBtn = document.getElementById('btn-attack');
     const passBtn = document.getElementById('btn-pass');
-    
+
     if (attackBtn) attackBtn.style.display = (!active.isAI && active.atk > 0 && !targetingMode) ? 'flex' : 'none';
     if (passBtn) passBtn.style.display = (!active.isAI && !targetingMode) ? 'flex' : 'none';
-    
+
     renderHands(active);
     renderPotions(active);
-    
-    if (game.gameOver) { 
-        elements.victoryText.innerText = game.log[game.log.length-1]; 
+
+    if (game.gameOver) {
+        elements.victoryText.innerText = game.log[game.log.length - 1];
         elements.overlay.classList.remove('hidden');
         elements.overlay.classList.add('show');
     }
@@ -625,7 +621,7 @@ function buildScoreboard() {
     elements.scoreboard.innerHTML = '';
     Object.values(game.players).forEach(p => {
         const div = document.createElement('div');
-        div.className = `player-stats ${p.team==='B'?'opponent':''} ${p.state==='defeated'?'defeated':''} ${targetingMode?'valid-target':''}`;
+        div.className = `player-stats ${p.team === 'B' ? 'opponent' : ''} ${p.state === 'defeated' ? 'defeated' : ''} ${targetingMode ? 'valid-target' : ''}`;
         div.onclick = () => window.onTargetClicked(p.id);
         div.innerHTML = `
             <div class="stat-row">
@@ -633,7 +629,7 @@ function buildScoreboard() {
                 <span>🧪 x${p.potions.length}</span>
             </div>
             <div class="progress-bar-bg">
-                <div class="progress-bar hp-bar" style="width:${(p.hp/game.maxHp)*100}%"></div>
+                <div class="progress-bar hp-bar" style="width:${(p.hp / game.maxHp) * 100}%"></div>
             </div>
             <div style="font-size:0.8rem">${Math.floor(p.hp)} HP | ATK ${p.atk} | DEF ${p.def}</div>
         `;
@@ -644,7 +640,7 @@ function buildScoreboard() {
 function buildArena() {
     elements.playedCardsArea.innerHTML = '';
     Object.values(game.players).forEach(p => {
-        const slot = document.createElement('div'); 
+        const slot = document.createElement('div');
         slot.className = 'played-card-slot';
         if (p.lastPlayedCard) slot.appendChild(createCardElement(p.lastPlayedCard, false));
         elements.playedCardsArea.appendChild(slot);
@@ -656,13 +652,13 @@ function renderHands(active) {
     if (!active.isAI) {
         active.hand.forEach((c, i) => elements.hand.appendChild(createCardElement(c, true, false, i)));
     }
-    
-    let aiCount = 0; 
-    Object.values(game.players).forEach(p => { if(p.isAI) aiCount += p.hand.length; });
-    for (let i=0; i<Math.min(5, aiCount); i++) { 
-        const d = document.createElement('div'); 
-        d.className = 'card back'; 
-        elements.oppHand.appendChild(d); 
+
+    let aiCount = 0;
+    Object.values(game.players).forEach(p => { if (p.isAI) aiCount += p.hand.length; });
+    for (let i = 0; i < Math.min(5, aiCount); i++) {
+        const d = document.createElement('div');
+        d.className = 'card back';
+        elements.oppHand.appendChild(d);
     }
 }
 
@@ -670,8 +666,8 @@ function renderPotions(active) {
     elements.potions.innerHTML = '';
     if (!active.isAI) {
         active.potions.forEach((p, i) => {
-            const d = document.createElement('div'); 
-            d.className = 'potion'; 
+            const d = document.createElement('div');
+            d.className = 'potion';
             d.innerHTML = `<span>🧪</span><div style="font-size:0.5rem">${p.name}</div>`;
             d.onclick = () => { game.usePotion(game.turn, i); updateUI(); };
             elements.potions.appendChild(d);
@@ -680,8 +676,8 @@ function renderPotions(active) {
 }
 
 function createCardElement(c, interactive, hidden, idx) {
-    const d = document.createElement('div'); 
-    d.className = `card ${c.type||''} ${hidden?'hidden':''}`;
+    const d = document.createElement('div');
+    d.className = `card ${c.type || ''} ${hidden ? 'hidden' : ''}`;
     if (!hidden && c.name) {
         d.innerHTML = `<div class="card-name">${c.name}</div><div class="card-desc">${c.description}</div>`;
     }

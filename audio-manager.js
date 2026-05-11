@@ -3,7 +3,7 @@
  * Gestione centralizzata audio con sblocco per Mac/Chrome/Mobile
  */
 
-export const AudioManager = {
+const AudioManager = {
     chill: new Audio('chill.mp3?v=1.1'),
     epic: new Audio('epic.mp3?v=1.1'),
     isUnlocked: false,

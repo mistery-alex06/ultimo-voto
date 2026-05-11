@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guerra all'Ultimo Voto</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="overlay">
@@ -25,7 +27,13 @@
                 <div class="leaderboard-col" style="flex: 1;">
                     <h3>Classifica Globale</h3>
                     <table id="leaderboard-table" style="width: 100%;">
-                        <thead><tr><th>Player</th><th>W</th><th>L</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>W</th>
+                                <th>L</th>
+                            </tr>
+                        </thead>
                         <tbody><!-- Sincronizzata da JS --></tbody>
                     </table>
                 </div>
@@ -33,9 +41,12 @@
                 <div class="modes-col" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                     <h3>Scegli Modalità</h3>
                     <button class="btn-restart" onclick="window.startGame('1v1')">Offline 1v1</button>
-                    <button class="btn-restart" onclick="window.startGame('2v2')" style="margin: 10px 0;">Offline 2v2</button>
-                    <button class="btn-restart" onclick="window.onOnlineMode()" style="background: var(--secondary);">Multiplayer Online</button>
-                    <button class="btn-restart" onclick="window.logoutUser()" style="background: #ff4444; margin-top: 20px; font-size: 0.8rem;">ESCI</button>
+                    <button class="btn-restart" onclick="window.startGame('2v2')" style="margin: 10px 0;">Offline
+                        2v2</button>
+                    <button class="btn-restart" onclick="window.onOnlineMode()"
+                        style="background: var(--secondary);">Multiplayer Online</button>
+                    <button class="btn-restart" onclick="window.logoutUser()"
+                        style="background: #ff4444; margin-top: 20px; font-size: 0.8rem;">ESCI</button>
                 </div>
             </div>
         </div>
@@ -48,9 +59,13 @@
             <button onclick="document.body.setAttribute('data-theme', 'light')">☀️</button>
             <button onclick="document.body.setAttribute('data-theme', 'cyberpunk')">🤖</button>
         </div>
-        <div class="opponent-hand-container"><div class="opponent-hand" id="opponent-hand"></div></div>
+        <div class="opponent-hand-container">
+            <div class="opponent-hand" id="opponent-hand"></div>
+        </div>
         <div class="scoreboard" id="scoreboard"></div>
-        <div class="deck-container"><div class="deck-count" id="deck-count">0</div></div>
+        <div class="deck-container">
+            <div class="deck-count" id="deck-count">0</div>
+        </div>
         <div class="arena">
             <div id="turn-indicator">Inizia</div>
             <div class="played-cards" id="played-cards-area"></div>
@@ -87,6 +102,16 @@
         </div>
     </div>
 
-    <script type="module" src="engine.js"></script>
+    <!-- Firebase Compat SDK per caricamento locale senza CORS -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+    <!-- Librerie di Gioco -->
+    <script src="cards.js"></script>
+    <script src="potions.js"></script>
+    <script src="audio-manager.js"></script>
+    <script src="multiplayer.js"></script>
+    <script src="engine.js"></script>
 </body>
+
 </html>
