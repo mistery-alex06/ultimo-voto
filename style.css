@@ -1310,3 +1310,92 @@ body {
 .hidden {
     display: none !important;
 }
+
+/* --- CLOUD LOBBY & LOGIN STYLES --- */
+.login-modal {
+    max-width: 400px;
+    padding: 3rem;
+}
+
+.lobby-window {
+    width: 90%;
+    max-width: 900px;
+    padding: 2.5rem;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.lobby-grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 2.5rem;
+    flex: 1;
+    min-height: 0;
+}
+
+.leaderboard-col {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 1.2rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--glass-border);
+    min-height: 0;
+}
+
+.table-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+#leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#leaderboard-table th {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 2px solid var(--glass-border);
+    opacity: 0.6;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+#leaderboard-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#leaderboard-table tr:last-child td {
+    border-bottom: none;
+}
+
+.actions-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lobby-buttons button {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lobby-buttons button:hover {
+    transform: scale(1.02) translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .lobby-grid {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+    }
+    
+    .lobby-window {
+        padding: 1.5rem;
+    }
+}
