@@ -483,15 +483,21 @@ window.onLoginSubmit = async () => {
 };
 
 window.showLobby = function() {
+    console.log("Transizione alla Lobby...");
     const name = sessionStorage.getItem('username');
     if (elements.userDisplay) elements.userDisplay.innerText = "Giocatore: " + name;
     
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('login-screen').classList.remove('show-flex');
+    // Rendi invisibile il login
+    const login = document.getElementById('login-screen');
+    login.style.display = 'none';
+    login.classList.remove('show');
+    login.classList.remove('show-flex');
     
+    // Rendi visibile la lobby
     const lobby = document.getElementById('lobby-container');
     lobby.style.display = 'flex';
     lobby.classList.add('show-flex');
+    
     window.syncLeaderboard();
 };
 
