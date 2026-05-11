@@ -7,7 +7,6 @@
     <title>Guerra all’Ultimo Voto - Lobby Cloud</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="guv.png">
-    <!-- Firebase is handled via modules in engine.js / multiplayer.js -->
 </head>
 
 <body>
@@ -18,7 +17,7 @@
             <p style="margin-bottom: 20px; opacity: 0.8;">Inserisci il tuo nome per entrare nel Cloud</p>
             <input type="text" id="username-input" placeholder="Nome utente..." maxlength="15"
                 style="padding: 12px 20px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); color: white; width: 100%; margin-bottom: 20px; font-size: 1rem; outline: none;">
-            <button class="btn-restart" id="btn-login-submit" style="width: 100%;">ENTRA</button>
+            <button class="btn-restart" onclick="window.onLoginSubmit()" style="width: 100%;">ENTRA</button>
         </div>
     </div>
 
@@ -50,9 +49,9 @@
                 <div class="actions-col">
                     <h3 class="col-title">Menu di Gioco</h3>
                     <div class="lobby-buttons">
-                        <button class="btn-restart" id="btn-open-offline" style="width: 100%; margin-bottom: 15px;">GIOCA OFFLINE (IA)</button>
-                        <button class="btn-restart" id="btn-open-online" style="width: 100%; margin-bottom: 15px; background: var(--secondary);">MULTIGIOCATORE ONLINE</button>
-                        <button class="btn-restart" id="btn-logout" style="width: 100%; margin-top: 20px; background: #ff4444; font-size: 0.8rem;">ESCI</button>
+                        <button class="btn-restart" onclick="window.showOfflineMenu()" style="width: 100%; margin-bottom: 15px;">GIOCA OFFLINE (IA)</button>
+                        <button class="btn-restart" onclick="window.showOnlineMenu()" style="width: 100%; margin-bottom: 15px; background: var(--secondary);">MULTIGIOCATORE ONLINE</button>
+                        <button class="btn-restart" onclick="window.logoutUser()" style="width: 100%; margin-top: 20px; background: #ff4444; font-size: 0.8rem;">ESCI</button>
                     </div>
                 </div>
             </div>
@@ -73,39 +72,34 @@
             <button onclick="document.body.setAttribute('data-theme', 'desert')" title="Desert Theme">🏜️</button>
         </div>
 
-        <!-- AI HAND -->
         <div class="opponent-hand-container">
             <div class="opponent-hand" id="opponent-hand"></div>
         </div>
 
-        <!-- SCOREBOARD -->
         <div class="scoreboard" id="scoreboard"></div>
 
         <div class="deck-container">
             <div class="deck-count" id="deck-count">0</div>
         </div>
 
-        <!-- ARENA -->
         <div class="arena">
             <div id="turn-indicator">Inizia la Partita</div>
             <div class="played-cards" id="played-cards-area"></div>
         </div>
 
-        <!-- LOG -->
         <div class="log-panel">
             <div class="log-title">LOG AZIONI</div>
             <div class="log-content" id="log-content"></div>
         </div>
 
-        <!-- BOTTOM HAND -->
         <div class="hand-container">
             <div style="display: flex; gap: 20px; align-items: flex-end; margin-bottom: 10px;">
                 <div class="potions-container" id="player-potions"></div>
-                <button class="btn-attack" id="btn-attack" style="display: none;">
+                <button class="btn-attack" id="btn-attack" onclick="window.onAttackClicked()" style="display: none;">
                     <div>⚔️</div>
                     <div style="font-size: 0.8rem">ATTACCA!</div>
                 </button>
-                <button class="btn-attack" id="btn-pass" style="display: none; background: var(--secondary);">
+                <button class="btn-attack" id="btn-pass" onclick="window.onPassClicked()" style="display: none; background: var(--secondary);">
                     <div>⏭️</div>
                     <div style="font-size: 0.8rem">PASSA</div>
                 </button>
@@ -115,38 +109,33 @@
     </div>
 
     <!-- SETUP OVERLAY -->
-    <div class="overlay" id="setup-overlay">
+    <div class="overlay hidden" id="setup-overlay">
         <div class="modal setup-modal">
             <h1>Impostazioni Partita</h1>
-
             <div id="level-1-menu">
-                <button class="btn-restart" id="btn-show-offline" style="margin: 10px; width: 80%;">GIOCA OFFLINE</button>
-                <button class="btn-restart" id="btn-show-online" style="margin: 10px; width: 80%;">GIOCA ONLINE</button>
-                <button class="btn-restart" id="btn-back-to-lobby" style="margin: 10px; width: 80%; background: gray;">TORNA ALLA LOBBY</button>
+                <!-- Se necessario -->
             </div>
-
-            <div id="level-2-menu" class="hidden">
-                <button class="btn-back" id="btn-nav-back" style="margin-bottom: 15px;">&larr; Indietro</button>
+            <div id="level-2-menu">
+                <button class="btn-back" onclick="window.backToLobby()" style="margin-bottom: 15px;">&larr; Indietro</button>
                 <div class="setup-form">
                     <div id="offline-setup" class="hidden">
                         <div class="setup-row">
                             <label>Modalità:</label>
-                            <select id="mode-select">
+                            <select id="mode-select" onchange="window.toggleOfflineMode()">
                                 <option value="1v1">1v1 contro IA</option>
                                 <option value="2v2">2v2 contro IA</option>
                             </select>
                         </div>
                     </div>
-
                     <div id="common-setup" class="hidden">
                         <div class="setup-row">
                             <label>Personalità (Tu):</label>
                             <select id="p1-pers">
                                 <option value="">Normale</option>
-                                <option value="Secchione">Secchione (+20% Def, -10% Atk)</option>
-                                <option value="Disperato">Disperato (+50% Atk se low HP)</option>
-                                <option value="Caotico">Caotico (Random)</option>
-                                <option value="Raccomandato">Raccomandato (Autorità + Evasione)</option>
+                                <option value="Secchione">Secchione</option>
+                                <option value="Disperato">Disperato</option>
+                                <option value="Caotico">Caotico</option>
+                                <option value="Raccomandato">Raccomandato</option>
                             </select>
                         </div>
                         <div class="setup-row hidden" id="setup-p2">
@@ -160,30 +149,26 @@
                             </select>
                         </div>
                     </div>
-
                     <div id="online-setup" class="hidden">
                         <input type="text" id="room-code-input" placeholder="Codice Stanza" style="width: 100%; margin-bottom: 10px;" />
-                        <button class="btn-restart" id="btn-create-room" style="width: 100%; margin-bottom: 5px;">CREA STANZA</button>
-                        <button class="btn-restart" id="btn-join-room" style="width: 100%;">UNISCITI</button>
+                        <button class="btn-restart" onclick="window.createOnlineRoom()" style="width: 100%; margin-bottom: 5px;">CREA STANZA</button>
+                        <button class="btn-restart" onclick="window.joinOnlineRoom()" style="width: 100%;">UNISCITI</button>
                         <div id="room-status" style="margin-top: 10px; color: var(--accent);"></div>
                     </div>
                 </div>
-                <button class="btn-restart hidden" id="btn-start-game" style="width: 100%;">INIZIA</button>
+                <button class="btn-restart hidden" id="btn-start-game" onclick="window.startGame()">INIZIA</button>
             </div>
         </div>
     </div>
 
-    <!-- GAME OVER MODAL -->
-    <div class="overlay" id="game-over-overlay">
+    <!-- GAME OVER -->
+    <div class="overlay hidden" id="game-over-overlay">
         <div class="modal">
             <h1 id="victory-text">VITTORIA!</h1>
-            <button class="btn-restart" id="btn-play-again">TORNA ALLA LOBBY</button>
+            <button class="btn-restart" onclick="location.reload()">TORNA ALLA LOBBY</button>
         </div>
     </div>
 
-    <div id="flash-news-banner">FLASH NEWS!</div>
-
     <script type="module" src="engine.js"></script>
 </body>
-
 </html>

@@ -461,44 +461,70 @@ const elements = {
     leaderboardBody: document.querySelector('#leaderboard-table tbody')
 };
 
-// Functions attached to window for HTML access
-window.onLoginSubmit = async function() {
-    const name = elements.usernameInput.value.trim();
-    if (!name) return alert("Inserisci un nome!");
-    const playerRef = ref(db, 'players/' + name);
+// --- GESTIONE LOGIN & LOBBY ---
+window.onLoginSubmit = async () => {
+    const name = document.getElementById('username-input').value.trim();
+    if (!name) return alert('Inserisci un nome!');
+    
+    sessionStorage.setItem('username', name);
+    
+    // Salvataggio/Inizializzazione su Firebase
+    const userRef = ref(db, 'players/' + name);
     try {
-        const snap = await get(playerRef);
-        if (!snap.exists()) await set(playerRef, { win: 0, loss: 0 });
-        sessionStorage.setItem('username', name);
-        elements.userDisplay.innerText = "Giocatore: " + name;
-        elements.loginScreen.classList.add('hidden');
-        elements.lobbyContainer.classList.remove('hidden');
-        window.syncLeaderboard();
-    } catch (e) { alert("Connessione Cloud fallita."); }
+        const snapshot = await get(userRef);
+        if (!snapshot.exists()) {
+            await set(userRef, { win: 0, loss: 0 });
+        }
+        window.showLobby();
+    } catch (e) {
+        console.error("Errore Firebase:", e);
+        alert("Errore di connessione al Cloud.");
+    }
+};
+
+window.showLobby = function() {
+    const name = sessionStorage.getItem('username');
+    if (elements.userDisplay) elements.userDisplay.innerText = "Giocatore: " + name;
+    
+    document.getElementById('login-screen').classList.remove('show');
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('lobby-container').classList.remove('hidden');
+    document.getElementById('lobby-container').classList.add('show');
+    window.syncLeaderboard();
 };
 
 window.syncLeaderboard = function() {
     onValue(ref(db, 'players'), (snap) => {
         if (snap.exists()) {
-            const list = Object.entries(snap.val()).map(([n, s]) => ({ n, ...s })).sort((a,b) => b.win - a.win);
-            elements.leaderboardBody.innerHTML = list.map(p => `<tr><td>${p.n}</td><td style="color:var(--primary)">${p.win}</td><td style="color:var(--hp-color)">${p.loss}</td></tr>`).join('');
+            const list = Object.entries(snap.val())
+                .map(([n, s]) => ({ n, ...s }))
+                .sort((a,b) => b.win - a.win);
+            
+            elements.leaderboardBody.innerHTML = list.map(p => `
+                <tr>
+                    <td>${p.n}</td>
+                    <td style="color:var(--primary)">${p.win}</td>
+                    <td style="color:var(--hp-color)">${p.loss}</td>
+                </tr>
+            `).join('');
+        } else {
+            elements.leaderboardBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; opacity: 0.5;">Nessun dato</td></tr>';
         }
     });
 };
 
-window.logoutUser = () => { sessionStorage.removeItem('username'); location.reload(); };
-
-window.showLevel1 = () => {
-    document.getElementById('level-1-menu').classList.remove('hidden');
-    document.getElementById('level-2-menu').classList.add('hidden');
+window.logoutUser = () => { 
+    sessionStorage.removeItem('username'); 
+    location.reload(); 
 };
 
+// --- GESTIONE MENU & PARTITA ---
 window.showOfflineMenu = () => {
+    elements.lobbyContainer.classList.remove('show');
     elements.lobbyContainer.classList.add('hidden');
+    elements.setupOverlay.classList.remove('hidden');
     elements.setupOverlay.classList.add('show');
-    window.showLevel1();
-    document.getElementById('level-1-menu').classList.add('hidden');
-    document.getElementById('level-2-menu').classList.remove('hidden');
+    
     document.getElementById('offline-setup').classList.remove('hidden');
     document.getElementById('online-setup').classList.add('hidden');
     document.getElementById('common-setup').classList.remove('hidden');
@@ -506,30 +532,52 @@ window.showOfflineMenu = () => {
 };
 
 window.showOnlineMenu = () => {
+    elements.lobbyContainer.classList.remove('show');
     elements.lobbyContainer.classList.add('hidden');
+    elements.setupOverlay.classList.remove('hidden');
     elements.setupOverlay.classList.add('show');
-    window.showLevel1();
-    document.getElementById('level-1-menu').classList.add('hidden');
-    document.getElementById('level-2-menu').classList.remove('hidden');
+    
     document.getElementById('online-setup').classList.remove('hidden');
     document.getElementById('offline-setup').classList.add('hidden');
     document.getElementById('common-setup').classList.remove('hidden');
     document.getElementById('btn-start-game').classList.add('hidden');
 };
 
+window.backToLobby = () => {
+    elements.setupOverlay.classList.remove('show');
+    elements.setupOverlay.classList.add('hidden');
+    window.showLobby();
+};
+
 window.startGame = function(forcedMode = null) {
     const mode = forcedMode || document.getElementById('mode-select').value;
-    const personalities = { player1: document.getElementById('p1-pers').value, player2: document.getElementById('p2-pers').value, player3: '', player4: '' };
+    const personalities = { 
+        player1: document.getElementById('p1-pers').value, 
+        player2: document.getElementById('p2-pers').value, 
+        player3: '', 
+        player4: '' 
+    };
+    
     game = new Game(CARDS, mode, personalities, forcedMode === 'multiplayer');
     game.onUpdate = updateUI;
     game.onCardDraw = animateCardDraw;
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
+    
     elements.setupOverlay.classList.remove('show');
+    elements.setupOverlay.classList.add('hidden');
     elements.gameContainer.classList.remove('hidden');
+    elements.gameContainer.classList.add('show');
+    
     updateUI();
 };
 
+window.toggleOfflineMode = () => {
+    const mode = document.getElementById('mode-select').value;
+    document.getElementById('setup-p2').classList.toggle('hidden', mode === '1v1');
+};
+
+// --- INTERAZIONI GIOCO ---
 window.onAttackClicked = () => { targetingMode = true; targetingAttack = true; updateUI(); };
 window.onPassClicked = () => game.endTurn();
 window.onTargetClicked = (id) => {
@@ -543,29 +591,40 @@ window.onCardClicked = (idx) => {
     selectedCardIndex = idx; targetingMode = true; targetingAttack = false; updateUI();
 };
 
-// Event Listeners for Buttons (new IDs)
-window.addEventListener('load', () => {
-    const user = sessionStorage.getItem('username');
-    if (user) window.loginUser(user);
-
-    document.getElementById('btn-login-submit').onclick = window.onLoginSubmit;
-    document.getElementById('btn-open-offline').onclick = window.showOfflineMenu;
-    document.getElementById('btn-open-online').onclick = window.showOnlineMenu;
-    document.getElementById('btn-logout').onclick = window.logoutUser;
-    document.getElementById('btn-show-offline').onclick = window.showOfflineMenu;
-    document.getElementById('btn-show-online').onclick = window.showOnlineMenu;
-    document.getElementById('btn-back-to-lobby').onclick = () => { elements.setupOverlay.classList.remove('show'); elements.lobbyContainer.classList.remove('hidden'); };
-    document.getElementById('btn-nav-back').onclick = window.showLevel1;
-    document.getElementById('btn-start-game').onclick = () => window.startGame();
-    document.getElementById('btn-play-again').onclick = () => location.reload();
-    document.getElementById('btn-create-room').onclick = async () => {
-        const code = await createRoom(game ? game.getSerializableState() : {}, (s) => { if(game) game.loadState(s); updateUI(); });
+// --- MULTIPLAYER ONLINE ---
+window.createOnlineRoom = async () => {
+    try {
+        const code = await createRoom(game ? game.getSerializableState() : {}, (s) => { 
+            if(game) game.loadState(s); 
+            updateUI(); 
+        });
         document.getElementById('room-code-input').value = code;
-    };
-    document.getElementById('btn-join-room').onclick = async () => {
-        const code = document.getElementById('room-code-input').value.trim();
-        if (await joinRoom(code, (s) => { if(game) game.loadState(s); updateUI(); })) window.startGame('multiplayer');
-    };
+        document.getElementById('room-status').innerText = "Stanza creata! Codice: " + code;
+    } catch (e) {
+        document.getElementById('room-status').innerText = "Errore creazione stanza.";
+    }
+};
+
+window.joinOnlineRoom = async () => {
+    const code = document.getElementById('room-code-input').value.trim();
+    if (!code) return alert("Inserisci un codice!");
+    const success = await joinRoom(code, (s) => { 
+        if(game) game.loadState(s); 
+        updateUI(); 
+    });
+    if (success) {
+        window.startGame('multiplayer');
+    } else {
+        alert("Stanza non trovata!");
+    }
+};
+
+// --- INIZIALIZZAZIONE ---
+window.addEventListener('DOMContentLoaded', () => {
+    const user = sessionStorage.getItem('username');
+    if (user) {
+        window.showLobby();
+    }
 });
 
 function updateUI() {
@@ -576,11 +635,21 @@ function updateUI() {
     buildArena();
     elements.indicator.innerText = targetingMode ? "Seleziona Bersaglio!" : (active.isAI ? "Turno del Prof" : "Tuo Turno");
     elements.log.innerHTML = game.log.slice().reverse().map(m => `<div class="log-entry">${m}</div>`).join('');
-    document.getElementById('btn-attack').style.display = (!active.isAI && active.atk > 0 && !targetingMode) ? 'flex' : 'none';
-    document.getElementById('btn-pass').style.display = (!active.isAI && !targetingMode) ? 'flex' : 'none';
+    
+    const attackBtn = document.getElementById('btn-attack');
+    const passBtn = document.getElementById('btn-pass');
+    
+    if (attackBtn) attackBtn.style.display = (!active.isAI && active.atk > 0 && !targetingMode) ? 'flex' : 'none';
+    if (passBtn) passBtn.style.display = (!active.isAI && !targetingMode) ? 'flex' : 'none';
+    
     renderHands(active);
     renderPotions(active);
-    if (game.gameOver) { elements.victoryText.innerText = game.log[game.log.length-1]; elements.overlay.classList.add('show'); }
+    
+    if (game.gameOver) { 
+        elements.victoryText.innerText = game.log[game.log.length-1]; 
+        elements.overlay.classList.remove('hidden');
+        elements.overlay.classList.add('show');
+    }
 }
 
 function buildScoreboard() {
@@ -589,7 +658,16 @@ function buildScoreboard() {
         const div = document.createElement('div');
         div.className = `player-stats ${p.team==='B'?'opponent':''} ${p.state==='defeated'?'defeated':''} ${targetingMode?'valid-target':''}`;
         div.onclick = () => window.onTargetClicked(p.id);
-        div.innerHTML = `<div class="stat-row"><span>${p.name}</span><span>🧪 x${p.potions.length}</span></div><div class="progress-bar-bg"><div class="progress-bar hp-bar" style="width:${(p.hp/game.maxHp)*100}%"></div></div><div style="font-size:0.8rem">${Math.floor(p.hp)} HP | ATK ${p.atk} | DEF ${p.def}</div>`;
+        div.innerHTML = `
+            <div class="stat-row">
+                <span>${p.name}</span>
+                <span>🧪 x${p.potions.length}</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar hp-bar" style="width:${(p.hp/game.maxHp)*100}%"></div>
+            </div>
+            <div style="font-size:0.8rem">${Math.floor(p.hp)} HP | ATK ${p.atk} | DEF ${p.def}</div>
+        `;
         elements.scoreboard.appendChild(div);
     });
 }
@@ -597,7 +675,8 @@ function buildScoreboard() {
 function buildArena() {
     elements.playedCardsArea.innerHTML = '';
     Object.values(game.players).forEach(p => {
-        const slot = document.createElement('div'); slot.className = 'played-card-slot';
+        const slot = document.createElement('div'); 
+        slot.className = 'played-card-slot';
         if (p.lastPlayedCard) slot.appendChild(createCardElement(p.lastPlayedCard, false));
         elements.playedCardsArea.appendChild(slot);
     });
@@ -605,27 +684,45 @@ function buildArena() {
 
 function renderHands(active) {
     elements.hand.innerHTML = ''; elements.oppHand.innerHTML = '';
-    if (!active.isAI) active.hand.forEach((c, i) => elements.hand.appendChild(createCardElement(c, true, false, i)));
-    let aiCount = 0; Object.values(game.players).forEach(p => { if(p.isAI) aiCount += p.hand.length; });
-    for (let i=0; i<Math.min(5, aiCount); i++) { const d = document.createElement('div'); d.className = 'card back'; elements.oppHand.appendChild(d); }
+    if (!active.isAI) {
+        active.hand.forEach((c, i) => elements.hand.appendChild(createCardElement(c, true, false, i)));
+    }
+    
+    let aiCount = 0; 
+    Object.values(game.players).forEach(p => { if(p.isAI) aiCount += p.hand.length; });
+    for (let i=0; i<Math.min(5, aiCount); i++) { 
+        const d = document.createElement('div'); 
+        d.className = 'card back'; 
+        elements.oppHand.appendChild(d); 
+    }
 }
 
 function renderPotions(active) {
     elements.potions.innerHTML = '';
-    if (!active.isAI) active.potions.forEach((p, i) => {
-        const d = document.createElement('div'); d.className = 'potion'; d.innerHTML = `<span>🧪</span><div style="font-size:0.5rem">${p.name}</div>`;
-        d.onclick = () => { game.usePotion(game.turn, i); updateUI(); };
-        elements.potions.appendChild(d);
-    });
+    if (!active.isAI) {
+        active.potions.forEach((p, i) => {
+            const d = document.createElement('div'); 
+            d.className = 'potion'; 
+            d.innerHTML = `<span>🧪</span><div style="font-size:0.5rem">${p.name}</div>`;
+            d.onclick = () => { game.usePotion(game.turn, i); updateUI(); };
+            elements.potions.appendChild(d);
+        });
+    }
 }
 
 function createCardElement(c, interactive, hidden, idx) {
-    const d = document.createElement('div'); d.className = `card ${c.type||''} ${hidden?'hidden':''}`;
-    if (!hidden && c.name) d.innerHTML = `<div class="card-name">${c.name}</div><div class="card-desc">${c.description}</div>`;
-    if (interactive && idx !== null) d.onclick = () => window.onCardClicked(idx);
+    const d = document.createElement('div'); 
+    d.className = `card ${c.type||''} ${hidden?'hidden':''}`;
+    if (!hidden && c.name) {
+        d.innerHTML = `<div class="card-name">${c.name}</div><div class="card-desc">${c.description}</div>`;
+    }
+    if (interactive && idx !== null) {
+        d.onclick = () => window.onCardClicked(idx);
+    }
     return d;
 }
 
 function animateCardDraw() { /* logic preserved */ }
 function playActionAnimation() { /* logic preserved */ }
 function spawnDamageParticles() { /* logic preserved */ }
+
