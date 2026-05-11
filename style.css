@@ -444,9 +444,11 @@ body {
 }
 
 .card.back {
-    background: linear-gradient(135deg, #c8cfd6 0%, #98a4af 50%, #bcc4cc 100%);
+    background: linear-gradient(135deg, rgba(200, 207, 214, 0.45) 0%, rgba(152, 164, 175, 0.38) 50%, rgba(188, 196, 204, 0.42) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 2px solid rgba(212, 175, 55, 0.75);
-    box-shadow: 0 0 9px rgba(212, 175, 55, 0.28), inset 0 0 12px rgba(212, 175, 55, 0.08);
+    box-shadow: 0 0 9px rgba(212, 175, 55, 0.28), inset 0 0 14px rgba(255, 255, 255, 0.15);
     cursor: default;
 }
 
