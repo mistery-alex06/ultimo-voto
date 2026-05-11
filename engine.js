@@ -9,7 +9,7 @@ const RANDOM_EVENTS = [
     { id: 'COMPITI_IN_CLASSE', name: 'COMPITI IN CLASSE', type: 'debuff', effect: 'no_potions', duration: 1 }
 ];
 
-export class Game {
+class Game {
     constructor(cards, mode = '1v1', personalities = {}, isMultiplayer = false) {
         this.allCards = cards;
         this.reset(mode, personalities, isMultiplayer);
@@ -459,37 +459,64 @@ const elements = {
 
 // --- PROTOCOLLO STATI UI ---
 window.switchScreen = (screenId, displayType = 'active-screen-flex') => {
+    console.log("Switching to screen:", screenId);
     // Nascondi tutto pulendo le classi dei container principali
     const login = document.getElementById('login-screen');
     const lobby = document.getElementById('lobby-container');
     const game = document.querySelector('.game-container');
     const setup = document.getElementById('setup-overlay');
-
+    
     if (login) login.className = 'overlay';
     if (lobby) lobby.className = 'overlay';
     if (game) game.className = 'game-container';
     if (setup) setup.className = 'overlay';
-
+    
     // Mostra solo quello che serve
     const target = document.getElementById(screenId) || document.querySelector('.' + screenId);
-    if (target) target.classList.add(displayType);
+    if (target) {
+        target.classList.remove('hidden'); // Rimuove eventuali classi residue
+        target.classList.add(displayType);
+        console.log("Screen activated:", screenId, "with type:", displayType);
+    } else {
+        console.warn("Screen target not found:", screenId);
+    }
 };
 
 window.onLoginSubmit = async () => {
-    const name = document.getElementById('username-input').value.trim();
+    const nameInput = document.getElementById('username-input');
+    const loginBtn = document.getElementById('login-btn');
+    const name = nameInput.value.trim();
+    
     if (!name) return alert('Inserisci un nome!');
-    sessionStorage.setItem('username', name);
-
-    window.switchScreen('lobby-container');
-    const userDisp = document.getElementById('user-display');
-    if (userDisp) userDisp.innerText = "Giocatore: " + name;
+    
+    // UI Loading State
+    if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.innerText = "ACCESSO...";
+        loginBtn.style.opacity = "0.7";
+    }
 
     try {
         const userRef = ref(db, 'players/' + name);
         const snap = await get(userRef);
         if (!snap.exists()) await set(userRef, { win: 0, loss: 0 });
+        
+        sessionStorage.setItem('username', name);
+        window.switchScreen('lobby-container');
+        
+        const userDisp = document.getElementById('user-display');
+        if (userDisp) userDisp.innerText = "Giocatore: " + name;
+        
         window.syncLeaderboard();
-    } catch (e) { console.error("Firebase Error:", e); }
+    } catch (e) { 
+        console.error("Firebase Error:", e);
+        alert("Errore di connessione al database.");
+        if (loginBtn) {
+            loginBtn.disabled = false;
+            loginBtn.innerText = "ENTRA";
+            loginBtn.style.opacity = "1";
+        }
+    }
 };
 
 window.showLobby = () => window.switchScreen('lobby-container');
@@ -501,13 +528,25 @@ window.syncLeaderboard = async () => {
         const playersRef = ref(db, 'players');
         onValue(playersRef, (snapshot) => {
             let html = '';
+            const localUser = sessionStorage.getItem('username');
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 const sorted = Object.entries(data)
                     .map(([name, stats]) => ({ name, ...stats }))
                     .sort((a, b) => (b.win || 0) - (a.win || 0));
-                sorted.forEach(p => {
-                    html += `<tr><td>${p.name}</td><td>${p.win || 0}</td><td>${p.loss || 0}</td></tr>`;
+                
+                sorted.forEach((p, index) => {
+                    const isLocal = p.name === localUser;
+                    let rankIcon = '';
+                    if (index === 0) rankIcon = '🥇 ';
+                    else if (index === 1) rankIcon = '🥈 ';
+                    else if (index === 2) rankIcon = '🥉 ';
+                    
+                    html += `<tr class="${isLocal ? 'current-player-row' : ''}" style="${isLocal ? 'background: rgba(99, 102, 241, 0.2); color: var(--accent) !important;' : ''}">
+                        <td>${rankIcon}${p.name} ${isLocal ? '(TU)' : ''}</td>
+                        <td>${p.win || 0}</td>
+                        <td>${p.loss || 0}</td>
+                    </tr>`;
                 });
             } else { html = '<tr><td colspan="3">Nessun dato</td></tr>'; }
             lbTable.innerHTML = html;

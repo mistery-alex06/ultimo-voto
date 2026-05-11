@@ -10,19 +10,19 @@
 
 <body>
     <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="overlay">
+    <div id="login-screen" class="overlay active-screen-flex">
         <div class="modal">
             <h1>Guerra all'Ultimo Voto</h1>
             <p>Inserisci il tuo nome per giocare</p>
             <input type="text" id="username-input" placeholder="Nome utente..." maxlength="15">
-            <button class="btn-restart" onclick="window.onLoginSubmit()">ENTRA</button>
+            <button id="login-btn" class="btn-restart" onclick="window.onLoginSubmit()">ENTRA</button>
         </div>
     </div>
 
     <!-- LOBBY CONTAINER -->
     <div id="lobby-container" class="overlay">
         <div class="modal lobby-window">
-            <div class="lobby-grid" style="display: flex; gap: 40px; min-height: 350px;">
+            <div class="lobby-grid">
                 <!-- SINISTRA: Classifica -->
                 <div class="leaderboard-col" style="flex: 1;">
                     <h3>Classifica Globale</h3>
