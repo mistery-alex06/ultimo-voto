@@ -7,10 +7,59 @@
     <title>Guerra all’Ultimo Voto</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="guv.png">
+    <!-- Firebase configuration is handled in multiplayer.js using modular SDK v10 -->
 </head>
 
 <body>
-    <div class="game-container">
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="overlay show">
+        <div class="modal login-modal">
+            <h1 style="color: var(--primary); text-shadow: 0 0 15px var(--primary);">Guerra all'Ultimo Voto</h1>
+            <p style="margin-bottom: 20px; opacity: 0.8;">Inserisci il tuo nome per entrare nella Lobby</p>
+            <input type="text" id="username-input" placeholder="Il tuo nome..." 
+                style="padding: 12px 20px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); color: white; width: 100%; margin-bottom: 20px; font-size: 1rem; outline: none;">
+            <button class="btn-restart" onclick="window.onLoginSubmit()" style="width: 100%;">ENTRA NELLA LOBBY</button>
+        </div>
+    </div>
+
+    <!-- LOBBY CONTAINER -->
+    <div id="lobby-container" class="overlay hidden">
+        <div class="modal lobby-window">
+            <div class="lobby-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="color: var(--primary);">Lobby Cloud</h2>
+                <div id="user-display" style="font-weight: 800; color: var(--accent);"></div>
+            </div>
+            <div class="lobby-grid">
+                <div class="leaderboard-col">
+                    <h3 style="font-size: 0.9rem; text-transform: uppercase; margin-bottom: 15px; opacity: 0.7;">Classifica Cloud</h3>
+                    <div class="table-wrapper">
+                        <table id="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Giocatore</th>
+                                    <th>V</th>
+                                    <th>S</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dinamico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="actions-col">
+                    <h3 style="font-size: 0.9rem; text-transform: uppercase; margin-bottom: 15px; opacity: 0.7;">Nuova Partita</h3>
+                    <div class="lobby-buttons">
+                        <button class="btn-restart" onclick="window.showOfflineMenu()" style="width: 100%; margin-bottom: 10px;">OFFLINE (IA)</button>
+                        <button class="btn-restart" onclick="window.showOnlineMenu()" style="width: 100%; margin-bottom: 10px; background: var(--secondary);">MULTIGIOCATORE ONLINE</button>
+                        <button class="btn-restart" onclick="window.logoutUser()" style="width: 100%; margin-top: 20px; background: #ff4444; font-size: 0.8rem;">LOGOUT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container hidden">
         <!-- THEME SELECTOR -->
         <div class="theme-selector">
             <button onclick="document.body.setAttribute('data-theme', 'dark')" title="Dark Theme">🌌</button>
@@ -35,7 +84,7 @@
 
         <div class="deck-container">
             <div class="deck-count" id="deck-count">0</div>
-        </div>
+        </div> 
 
         <!-- ARENA -->
         <div class="arena">

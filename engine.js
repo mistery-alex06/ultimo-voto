@@ -4,7 +4,7 @@
 
 import { POTIONS } from './potions.js';
 import { CARDS } from './cards.js';
-import { createRoom, joinRoom, updateGameState, isHost, currentRoom } from './multiplayer.js';
+import { createRoom, joinRoom, updateGameState, isHost, currentRoom, db, ref, set, onValue, get, update } from './multiplayer.js';
 
 import { AudioManager } from './audio-manager.js';
 
@@ -705,8 +705,94 @@ const elements = {
     oppHand: document.getElementById('opponent-hand'),
     setupOverlay: document.getElementById('setup-overlay'),
     roomCodeInput: document.getElementById('room-code-input'),
-    roomStatus: document.getElementById('room-status')
+    roomStatus: document.getElementById('room-status'),
+    loginScreen: document.getElementById('login-screen'),
+    lobbyContainer: document.getElementById('lobby-container'),
+    gameContainer: document.querySelector('.game-container'),
+    usernameInput: document.getElementById('username-input'),
+    userDisplay: document.getElementById('user-display'),
+    leaderboardBody: document.querySelector('#leaderboard-table tbody')
 };
+
+// --- CLOUD LOBBY FUNCTIONS ---
+window.onLoginSubmit = function() {
+    const name = elements.usernameInput.value.trim();
+    if (!name) return alert("Inserisci un nome!");
+    if (name.length < 3) return alert("Nome troppo corto!");
+    window.loginUser(name);
+};
+
+window.loginUser = async function(name) {
+    const playerRef = ref(db, 'players/' + name);
+    try {
+        const snapshot = await get(playerRef);
+        if (!snapshot.exists()) {
+            await set(playerRef, { win: 0, loss: 0 });
+        }
+        sessionStorage.setItem('username', name);
+        elements.userDisplay.innerText = "Benvenuto, " + name;
+        elements.loginScreen.classList.add('hidden');
+        elements.lobbyContainer.classList.remove('hidden');
+        window.syncLeaderboard();
+    } catch (e) {
+        console.error("Errore login:", e);
+        alert("Errore di connessione al Cloud.");
+    }
+};
+
+window.syncLeaderboard = function() {
+    const playersRef = ref(db, 'players');
+    onValue(playersRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const players = snapshot.val();
+            const sorted = Object.entries(players)
+                .map(([name, stats]) => ({ name, ...stats }))
+                .sort((a, b) => b.win - a.win);
+            
+            elements.leaderboardBody.innerHTML = sorted.map(p => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td style="color: var(--primary)">${p.win}</td>
+                    <td style="color: var(--hp-color)">${p.loss}</td>
+                </tr>
+            `).join('');
+        }
+    });
+};
+
+window.logoutUser = function() {
+    sessionStorage.removeItem('username');
+    location.reload();
+};
+
+window.openOfflineSetup = function() {
+    elements.lobbyContainer.classList.add('hidden');
+    elements.setupOverlay.classList.add('show');
+    window.showOfflineMenu();
+};
+
+window.openOnlineSetup = function() {
+    elements.lobbyContainer.classList.add('hidden');
+    elements.setupOverlay.classList.add('show');
+    window.showOnlineMenu();
+};
+
+// Override startGame to show game container
+const originalStartGame = window.startGame;
+window.startGame = function(forcedMode = null) {
+    elements.setupOverlay.classList.remove('show');
+    elements.lobbyContainer.classList.add('hidden');
+    elements.gameContainer.classList.remove('hidden');
+    originalStartGame(forcedMode);
+};
+
+// Check session on start
+window.addEventListener('load', () => {
+    const savedName = sessionStorage.getItem('username');
+    if (savedName) {
+        window.loginUser(savedName);
+    }
+});
 
 window.showLevel1 = function () {
     document.getElementById('level-1-menu').classList.remove('hidden');
