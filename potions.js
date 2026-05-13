@@ -1,4 +1,4 @@
-export const POTIONS = [
+const POTIONS = [
     {
         name: "Caffè Forte",
         description: "Aumenta moderatamente l'attacco",

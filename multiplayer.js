@@ -1,5 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+// Nessun import: usa i CDN Firebase Compat da index.html
 
 const firebaseConfig = {
     apiKey: "AIzaSyAdP4M4btGlOg6RG60jz_3GwvwC0l3aIx8",
@@ -12,21 +11,27 @@ const firebaseConfig = {
     measurementId: "G-5MRFFSSTSX"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// Inizializza Firebase Compat
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-export { db, ref, set, onValue, get, update };
+// Wrapper per mantenere compatibilità con lo stile modulare in engine.js
+const ref = (dbInstance, path) => dbInstance.ref(path);
+const set = (refInstance, data) => refInstance.set(data);
+const onValue = (refInstance, callback) => refInstance.on('value', callback);
+const get = (refInstance) => refInstance.once('value');
+const update = (refInstance, data) => refInstance.update(data);
 
-export let currentRoom = null;
-export let isHost = false;
+let currentRoom = null;
+let isHost = false;
 
-export async function createRoom(gameState, callback) {
+async function createRoom(gameState, callback) {
     const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     currentRoom = roomCode;
     isHost = true;
 
     const roomRef = ref(db, 'rooms/' + roomCode);
-    
+
     try {
         await set(roomRef, {
             state: gameState,
@@ -34,13 +39,13 @@ export async function createRoom(gameState, callback) {
             lastUpdate: Date.now()
         });
         console.log("Stanza creata nel DB:", roomCode);
-        
+
         onValue(roomRef, (snapshot) => {
             if (snapshot.exists() && callback) {
                 callback(snapshot.val().state);
             }
         });
-        
+
         return roomCode;
     } catch (e) {
         console.error("ERRORE DI SCRITTURA:", e);
@@ -49,41 +54,43 @@ export async function createRoom(gameState, callback) {
     }
 }
 
-export async function joinRoom(roomCode, callback) {
+async function joinRoom(roomCode, callback) {
     const roomRef = ref(db, 'rooms/' + roomCode);
-    
     try {
         const snapshot = await get(roomRef);
-
         if (snapshot.exists()) {
             currentRoom = roomCode;
             isHost = false;
-            console.log("DEBUG: Unito alla stanza", roomCode);
 
-            await update(ref(db, 'rooms/' + roomCode), { status: 'playing', lastUpdate: Date.now() });
+            await update(roomRef, { status: 'playing' });
+            console.log("Unito alla stanza:", roomCode);
 
             onValue(roomRef, (snapshot) => {
                 if (snapshot.exists() && callback) {
                     callback(snapshot.val().state);
                 }
             });
-
             return true;
+        } else {
+            alert("Stanza non trovata!");
+            return false;
         }
-        console.log("DEBUG: Stanza", roomCode, "non trovata!");
-        return false;
     } catch (e) {
         console.error("ERRORE DI LETTURA:", e);
+        alert("Errore Firebase: impossibile unirsi alla stanza.");
         return false;
     }
 }
 
-export async function updateGameState(gameState) {
-    if (currentRoom) {
-        try {
-            await update(ref(db, 'rooms/' + currentRoom), { state: gameState, lastUpdate: Date.now() });
-        } catch (e) {
-            console.error("Errore durante l'aggiornamento dello stato:", e);
-        }
+async function updateGameState(gameState) {
+    if (!currentRoom) return;
+    try {
+        const roomRef = ref(db, 'rooms/' + currentRoom);
+        await update(roomRef, {
+            state: gameState,
+            lastUpdate: Date.now()
+        });
+    } catch (e) {
+        console.error("Errore durante l'aggiornamento dello stato:", e);
     }
 }
