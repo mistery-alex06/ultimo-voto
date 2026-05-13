@@ -906,11 +906,12 @@ body {
 
 .deck-container {
     position: absolute;
-    left: clamp(12rem, 18vw, 16rem); /* Spostato a sinistra */
+    right: 105%; /* Posizionato a sinistra rispetto al centro dell'arena */
+    left: auto;
     top: 50%;
     transform: translateY(-50%);
-    width: clamp(6rem, 10vw, 10rem);
-    height: clamp(9rem, 14vw, 15rem);
+    width: clamp(5rem, 8vw, 8rem);
+    height: clamp(8rem, 12vw, 12rem);
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid var(--glass-border);
     border-radius: 1rem;
@@ -1552,6 +1553,16 @@ body {
     .lobby-window {
         padding: 1.5rem;
     }
+}
+
+#turn-indicator {
+    grid-column: 2;
+    text-align: center;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 800;
+    margin: 1rem 0;
+    z-index: 10;
+    align-self: center;
 }
 
 #turn-indicator.turn-player { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
