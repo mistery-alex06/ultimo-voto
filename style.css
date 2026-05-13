@@ -1551,7 +1551,10 @@ body {
 
     .lobby-window {
         padding: 1.5rem;
-    }#turn-indicator.turn-player { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+    }
+}
+
+#turn-indicator.turn-player { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
 #turn-indicator.turn-ai { color: var(--secondary); text-shadow: 0 0 10px var(--secondary-glow); }
 
 /* --- REFACTORING LAYOUT MOBILE 1V1 (SINGLE COLUMN FLOW) --- */
@@ -1564,7 +1567,7 @@ body {
         height: 100vh !important;
         overflow-y: auto !important;
         padding: 5px !important;
-        gap: 6px !important;
+        gap: 5px !important;
     }
 
     /* 1. Barra dei Temi (Top) */
@@ -1589,12 +1592,13 @@ body {
     .scoreboard {
         grid-column: auto !important;
         grid-row: auto !important;
+        position: static !important;
         display: flex !important;
         flex-direction: row !important;
         justify-content: center !important;
         gap: 8px !important;
-        padding-top: 5px !important;
-        margin-bottom: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
         width: 100% !important;
         order: 2;
     }
@@ -1617,32 +1621,37 @@ body {
     .opponent-hand-container {
         grid-column: auto !important;
         grid-row: auto !important;
+        position: static !important;
         display: flex !important;
         justify-content: center !important;
         padding: 0 !important;
+        margin: 0 !important;
         order: 3;
+        height: auto !important;
     }
     
     .opponent-hand .card {
-        width: 45px !important;
-        height: 65px !important;
-        margin-left: -20px !important;
+        width: 42px !important;
+        height: 60px !important;
+        margin-left: -18px !important;
         border-radius: 0.4rem !important;
     }
 
-    /* 4. Indicatore Turno (Between AI hand and played cards) */
+    /* 4. Indicatore Turno */
     #turn-indicator {
         font-size: 1.1rem !important;
         margin: 2px 0 !important;
         text-align: center !important;
         order: 4;
         font-weight: 800 !important;
+        position: static !important;
     }
 
-    /* 5. Campo di Battaglia (Battleground) */
+    /* 5. Campo di Battaglia (Arena centered) */
     .arena {
         grid-column: auto !important;
         grid-row: auto !important;
+        position: static !important;
         display: flex !important;
         flex-direction: row !important;
         justify-content: center !important;
@@ -1651,24 +1660,31 @@ body {
         order: 5;
         flex: 0 1 auto !important;
         gap: 15px !important;
+        width: 100% !important;
     }
 
     .deck-container {
         position: static !important;
-        width: 40px !important;
-        height: 55px !important;
+        width: 45px !important;
+        height: 65px !important;
         margin: 0 !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 2px solid var(--glass-border) !important;
+        transform: none !important;
+        left: auto !important;
+        top: auto !important;
     }
     
-    .deck-count { font-size: 0.7rem !important; }
+    .deck-count { font-size: 0.8rem !important; opacity: 0.8 !important; }
 
     .played-cards {
         margin: 0 !important;
         gap: 5px !important;
         display: flex !important;
+        position: static !important;
     }
     
     .played-card-slot {
@@ -1686,17 +1702,17 @@ body {
         transform: none !important;
         width: 98% !important;
         margin: 0 auto !important;
-        max-height: 80px !important;
+        max-height: 75px !important;
         padding: 5px !important;
         border-radius: 0.8rem !important;
         order: 6;
     }
     
     .log-title { font-size: 0.65rem !important; margin-bottom: 2px !important; }
-    .log-content { max-height: 55px !important; font-size: 0.65rem !important; overflow-y: auto !important; }
+    .log-content { max-height: 50px !important; font-size: 0.65rem !important; overflow-y: auto !important; }
     .log-entry { margin-bottom: 2px !important; padding-bottom: 2px !important; }
 
-    /* 7. Controlli Azione (PASSA e POZIONI) */
+    /* 7. Controlli Azione */
     .hand-container {
         grid-column: auto !important;
         grid-row: auto !important;
@@ -1705,6 +1721,7 @@ body {
         order: 7;
         padding-bottom: 5px !important;
         height: auto !important;
+        position: static !important;
     }
     
     #btn-attack, #btn-pass, #player-potions {
@@ -1718,8 +1735,8 @@ body {
     #btn-attack, #btn-pass {
         display: inline-flex !important;
         padding: 0.4rem 0.8rem !important;
-        font-size: 0.7rem !important;
-        min-width: 80px !important;
+        font-size: 0.75rem !important;
+        min-width: 85px !important;
     }
     
     #player-potions {
@@ -1737,8 +1754,9 @@ body {
         order: 2;
         gap: -40px !important;
         justify-content: center !important;
-        padding: 5px 0 15px 0 !important;
+        padding: 5px 0 10px 0 !important;
         margin-top: auto !important;
+        position: static !important;
     }
     
     .hand .card {
