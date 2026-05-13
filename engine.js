@@ -656,6 +656,7 @@ function updateUI() {
     buildScoreboard();
     buildArena();
     elements.indicator.innerText = targetingMode ? "Seleziona Bersaglio!" : (active.isAI ? "Turno del Prof" : "Tuo Turno");
+    elements.indicator.className = active.isAI ? "turn-ai" : "turn-player";
     elements.log.innerHTML = game.log.slice().reverse().map(m => `<div class="log-entry">${m}</div>`).join('');
 
     const attackBtn = document.getElementById('btn-attack');
