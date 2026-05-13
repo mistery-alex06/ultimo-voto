@@ -320,11 +320,12 @@ body {
 .opponent-hand-container {
     grid-column: 2;
     grid-row: 1;
-    height: auto;
+    height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding-top: 2rem; /* Alzate leggermente */
+    align-items: center; 
+    padding-top: 5rem; /* Abbassate per non sovrapporsi ai temi */
+    margin: 0;
     z-index: 10;
 }
 
@@ -528,13 +529,15 @@ body {
 
 .opponent-hand {
     display: flex;
-    gap: -80px;
+    justify-content: center;
+    align-items: center;
+    gap: -40px; /* Overlap leggero per desktop */
 }
 
 .opponent-hand .card {
     width: 80px;
     height: 110px;
-    margin-left: -50px;
+    margin-left: 0;
 }
 
 .card.hidden {
