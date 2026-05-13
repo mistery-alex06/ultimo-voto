@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guerra all'Ultimo Voto</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-desktop.css" media="screen and (min-width: 768px)">
+    <link rel="stylesheet" href="style-mobile.css" media="screen and (max-width: 767px)">
 </head>
 
 <body>
@@ -80,9 +81,11 @@
             <div class="log-content" id="log-content"></div>
         </div>
         <div class="hand-container">
-            <div id="player-potions"></div>
-            <button id="btn-attack" onclick="window.onAttackClicked()" style="display:none">ATTACCA</button>
-            <button id="btn-pass" onclick="window.onPassClicked()" style="display:none">PASSA</button>
+            <div class="controls-group">
+                <div id="player-potions"></div>
+                <button id="btn-attack" onclick="window.onAttackClicked()" style="display:none">ATTACCA</button>
+                <button id="btn-pass" onclick="window.onPassClicked()" style="display:none">PASSA</button>
+            </div>
             <div class="hand" id="player-hand"></div>
         </div>
     </div>
