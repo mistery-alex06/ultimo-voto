@@ -25,7 +25,7 @@ const update = (refInstance, data) => refInstance.update(data);
 let currentRoom = null;
 let isHost = false;
 
-async function createRoom(gameState, callback) {
+async function createRoom(callback) {
     const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     currentRoom = roomCode;
     isHost = true;
@@ -33,16 +33,21 @@ async function createRoom(gameState, callback) {
     const roomRef = ref(db, 'rooms/' + roomCode);
 
     try {
+        const username = sessionStorage.getItem('username') || 'Host';
         await set(roomRef, {
-            state: gameState,
             status: 'waiting',
+            hostName: username,
+            turn: username,
             lastUpdate: Date.now()
         });
         console.log("Stanza creata nel DB:", roomCode);
 
+        // DISCONNECT SAFETY: Se l'host cade, la stanza diventa 'abandoned'
+        roomRef.onDisconnect().update({ status: 'abandoned' });
+
         onValue(roomRef, (snapshot) => {
             if (snapshot.exists() && callback) {
-                callback(snapshot.val().state);
+                callback(snapshot.val());
             }
         });
 
@@ -58,21 +63,27 @@ async function joinRoom(roomCode, callback) {
     const roomRef = ref(db, 'rooms/' + roomCode);
     try {
         const snapshot = await get(roomRef);
-        if (snapshot.exists()) {
+        if (snapshot.exists() && snapshot.val().status === 'waiting') {
             currentRoom = roomCode;
             isHost = false;
 
-            await update(roomRef, { status: 'playing' });
+            // DISCONNECT SAFETY: Se il guest cade, la stanza diventa 'abandoned'
+            roomRef.onDisconnect().update({ status: 'abandoned' });
+
+            const username = sessionStorage.getItem('username') || 'Guest';
+            await update(roomRef, { 
+                status: 'playing',
+                guestName: username 
+            });
             console.log("Unito alla stanza:", roomCode);
 
             onValue(roomRef, (snapshot) => {
                 if (snapshot.exists() && callback) {
-                    callback(snapshot.val().state);
+                    callback(snapshot.val());
                 }
             });
             return true;
         } else {
-            alert("Stanza non trovata!");
             return false;
         }
     } catch (e) {

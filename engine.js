@@ -559,13 +559,33 @@ window.logoutUser = () => {
     location.reload();
 };
 
-window.onOnlineMode = () => window.switchScreen('setup-overlay');
+window.onOnlineMode = () => {
+    // Resetta l'interfaccia multiplayer
+    const btnCreate = document.getElementById('btn-create-room');
+    const btnJoin = document.getElementById('btn-join-room');
+    const inputCode = document.getElementById('room-code-input');
+    if (btnCreate) btnCreate.disabled = false;
+    if (btnJoin) btnJoin.disabled = false;
+    if (inputCode) {
+        inputCode.disabled = false;
+        inputCode.value = '';
+    }
+    document.getElementById('room-status').innerText = '';
+    window.switchScreen('setup-overlay');
+};
 window.backToLobby = () => window.switchScreen('lobby-container');
 
-window.startGame = function (forcedMode = null) {
+window.startGame = function (forcedMode = null, isMultiplayer = false, p1Name = null, p2Name = null) {
     window.switchScreen('game-container', 'active-screen-block');
     const mode = forcedMode || "1v1";
-    game = new Game(CARDS, mode, {}, forcedMode === 'multiplayer');
+    game = new Game(CARDS, mode, {}, isMultiplayer);
+    
+    // Inietta i nomi reali in multiplayer senza rompere la modalità offline
+    if (isMultiplayer && p1Name && p2Name) {
+        game.players.player1.name = isHost ? p1Name : p2Name;
+        game.players.player2.name = isHost ? p2Name : p1Name;
+    }
+
     game.onUpdate = updateUI;
     game.onCardDraw = animateCardDraw;
     game.onAnimation = playActionAnimation;
@@ -614,32 +634,78 @@ window.onCardClicked = (idx) => {
 };
 
 // --- MULTIPLAYER ONLINE ---
+let gameInstanceStarted = false;
+
 window.createOnlineRoom = async () => {
+    // Disabilita i controlli per evitare doppi click o unioni accidentali
+    const btnCreate = document.getElementById('btn-create-room');
+    const btnJoin = document.getElementById('btn-join-room');
+    const inputCode = document.getElementById('room-code-input');
+    if (btnCreate) btnCreate.disabled = true;
+    if (btnJoin) btnJoin.disabled = true;
+    if (inputCode) inputCode.disabled = true;
+
     try {
-        const code = await createRoom(game ? game.getSerializableState() : {}, (s) => {
-            if (game) game.loadState(s);
-            updateUI();
-        });
-        document.getElementById('room-code-input').value = code;
-        document.getElementById('room-status').innerText = "Stanza creata! Codice: " + code;
+        const code = await createRoom((roomData) => handleRoomUpdate(roomData));
+        inputCode.value = code;
+        document.getElementById('room-status').innerText = "Stanza creata! In attesa di un avversario...";
     } catch (e) {
         document.getElementById('room-status').innerText = "Errore creazione stanza.";
+        if (btnCreate) btnCreate.disabled = false;
+        if (btnJoin) btnJoin.disabled = false;
+        if (inputCode) inputCode.disabled = false;
     }
 };
 
 window.joinOnlineRoom = async () => {
-    const code = document.getElementById('room-code-input').value.trim();
+    const inputCode = document.getElementById('room-code-input');
+    const code = inputCode.value.trim();
     if (!code) return alert("Inserisci un codice!");
-    const success = await joinRoom(code, (s) => {
-        if (game) game.loadState(s);
-        updateUI();
-    });
-    if (success) {
-        window.startGame('multiplayer');
+
+    const btnCreate = document.getElementById('btn-create-room');
+    const btnJoin = document.getElementById('btn-join-room');
+
+    if (btnCreate) btnCreate.disabled = true;
+    if (btnJoin) btnJoin.disabled = true;
+    if (inputCode) inputCode.disabled = true;
+
+    const success = await joinRoom(code, (roomData) => handleRoomUpdate(roomData));
+    if (!success) {
+        alert("Stanza non trovata o partita già in corso!");
+        if (btnCreate) btnCreate.disabled = false;
+        if (btnJoin) btnJoin.disabled = false;
+        if (inputCode) inputCode.disabled = false;
     } else {
-        alert("Stanza non trovata!");
+        document.getElementById('room-status').innerText = "Unito! Avvio in corso...";
     }
 };
+
+function handleRoomUpdate(roomData) {
+    if (!roomData) return;
+
+    if (roomData.status === 'abandoned') {
+        alert("L'avversario si è disconnesso.");
+        location.reload();
+        return;
+    }
+
+    if (roomData.status === 'playing' && !gameInstanceStarted) {
+        gameInstanceStarted = true;
+        
+        // Nascondi immediatamente lobby e setup
+        document.getElementById('setup-overlay').classList.add('hidden');
+        document.getElementById('lobby-container').classList.add('hidden');
+        
+        // Avvia l'istanza di gioco con i nomi reali
+        window.startGame('1v1', true, roomData.hostName, roomData.guestName);
+    }
+    
+    // Sincronizzazione stato di gioco
+    if (roomData.status === 'playing' && roomData.state && game) {
+        game.loadState(roomData.state);
+        updateUI();
+    }
+}
 
 // --- INIZIALIZZAZIONE ---
 window.addEventListener('DOMContentLoaded', () => {
