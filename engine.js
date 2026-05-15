@@ -469,7 +469,6 @@ const elements = {
     hand: document.getElementById('player-hand'),
     potions: document.getElementById('player-potions'),
     log: document.getElementById('log-content'),
-    indicator: document.getElementById('turn-indicator'),
     overlay: document.getElementById('game-over-overlay'),
     victoryText: document.getElementById('victory-text'),
     playedCardsArea: document.getElementById('played-cards-area'),
@@ -763,8 +762,6 @@ function updateUI() {
     elements.deckCount.innerText = game.sharedDeck.length;
     buildScoreboard();
     buildArena();
-    elements.indicator.innerText = targetingMode ? "Seleziona Bersaglio!" : (active.isAI ? "Turno del Prof" : "Tuo Turno");
-    elements.indicator.className = active.isAI ? "turn-ai" : "turn-player";
     elements.log.innerHTML = game.log.slice().reverse().map(m => `<div class="log-entry">${m}</div>`).join('');
 
     const attackBtn = document.getElementById('btn-attack');
