@@ -1694,9 +1694,8 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 100px 0 5px 0 !important; /* Abbassate ulteriormente */
-    padding: 0 0 0 18% !important;
-    /* Spostamento proporzionale verso destra */
+    margin: 30px 0 5px 0 !important;
+    padding: 0 !important; /* Rimosso padding-left decentrante */
 }
 
 .opponent-hand {
@@ -1713,7 +1712,7 @@ body {
 .opponent-hand .card {
     width: 54px !important;
     height: 76px !important;
-    margin: 0 -8px !important;
+    margin: 0 0 0 -6px !important; /* Margine negativo solo a sinistra per evitare lo schiacciamento */
     position: relative !important;
     flex-shrink: 0 !important;
     transform: none !important;
@@ -1727,11 +1726,11 @@ body {
     margin-right: 0 !important;
 }
 
-/* 4. Indicatore Turno — ora sotto il log */
+/* 4. Indicatore Turno — compresso sopra le carte del giocatore */
 #turn-indicator {
-    order: 7;
-    margin: 10px 0 !important;
-    padding-left: 17% !important;
+    order: 8;
+    margin: 5px 0 2px 0 !important; /* Millimetricamente sopra le carte */
+    padding: 0 !important; /* Rimosso l'offset laterale */
     position: static !important;
     width: 100% !important;
     text-align: center !important;
@@ -1795,46 +1794,35 @@ body {
     height: 120px !important;
 }
 
-/* 6. Log Azioni — ora dopo l'indicatore turno */
+/* 6. Log Azioni — centrato tra arena e controlli */
 .log-panel {
-    position: relative !important;
-    left: 0 !important;
-    top: 0 !important;
-    transform: none !important;
+    position: static !important;
     width: 90% !important;
-    max-width: 170px !important;
-    height: 120px !important; /* Ridotto per evitare overflow su schermi con barre UI ingombranti */
-    margin: 15px auto !important;
-    /* Spazio pulito sopra e sotto, centrato */
+    max-width: 400px !important;
+    height: 100px !important; /* Altezza fissa ottimizzata */
+    margin: 10px auto !important; /* Centrato orizzontalmente con margini puliti */
     padding: 0.5rem !important;
     font-size: 0.75rem !important;
     background: rgba(0, 0, 0, 0.4) !important;
     border-radius: 0.5rem !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    overflow-y: auto !important;
+    overflow-y: auto !important; /* Scorrimento verticale garantito */
     order: 6;
-    /* Mantiene la priorità corretta nel flexbox */
 }
 
-/* 7. Pulsanti Player */
+/* 7. Contenitore Controlli e Mano (display contents per liberare l'ordine) */
 .hand-container {
-    display: flex !important;
-    flex-direction: column !important;
-    order: 8;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    position: static !important;
-    padding: 0 !important;
+    display: contents !important;
 }
 
 .controls-group {
+    order: 7;
     display: flex !important;
     flex-direction: row !important;
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
-    margin-bottom: 10px !important;
+    margin: 5px 0 !important; /* Spazio compresso */
 }
 
 #btn-attack,
@@ -1858,6 +1846,7 @@ body {
 
 /* 8. Mano Player */
 .hand {
+    order: 9;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -1865,9 +1854,8 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 10px 0 !important;
+    margin: 0 0 10px 0 !important; /* Margine compresso al fondo schermo */
     padding: 0 !important;
-    order: 8;
 }
 
 .hand .card {
