@@ -1694,8 +1694,8 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 55px 0 5px 0 !important; /* Spostate più in basso e ridotto margine inferiore */
-    padding: 0 0 0 15% !important;
+    margin: 75px 0 5px 0 !important; /* Abbassate ulteriormente */
+    padding: 0 0 0 18% !important; /* Spostate leggermente più a destra */
     /* Spostamento proporzionale verso destra */
 }
 
@@ -1731,7 +1731,7 @@ body {
 #turn-indicator {
     order: 6;
     margin: 15px 0 !important;
-    padding-left: 14% !important; /* Spostamento proporzionale verso destra */
+    padding-left: 17% !important; /* Spostamento leggermente più a destra */
     position: static !important;
     width: 100% !important;
     text-align: center !important;
