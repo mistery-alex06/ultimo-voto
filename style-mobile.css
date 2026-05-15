@@ -1617,9 +1617,10 @@ body {
     height: auto !important;
     min-height: 100vh !important;
     min-height: 100dvh !important; /* Gestisce dinamicamente la barra di ricerca/UI del browser */
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding: 50px 8px 15px 8px !important;
+    overflow: hidden !important; /* Disabilita lo scorrimento */
+    height: 100vh !important;
+    height: 100dvh !important;
+    padding: 45px 8px 10px 8px !important;
     gap: 0.8rem !important;
     position: relative !important;
     width: 100% !important;
@@ -1636,7 +1637,7 @@ body {
     order: 1;
     display: flex !important;
     gap: 0.5rem !important;
-    width: 50% !important;
+    width: 85% !important;
     justify-content: center !important;
     z-index: 2000 !important;
 }
@@ -1693,7 +1694,7 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 45px 0 10px 0 !important; /* Ridotto leggermente per recuperare spazio verticale */
+    margin: 55px 0 5px 0 !important; /* Spostate più in basso e ridotto margine inferiore */
     padding: 0 0 0 15% !important;
     /* Spostamento proporzionale verso destra */
 }
@@ -1710,8 +1711,8 @@ body {
 }
 
 .opponent-hand .card {
-    width: 58px !important;
-    height: 82px !important;
+    width: 54px !important;
+    height: 76px !important;
     margin: 0 -8px !important;
     position: relative !important;
     flex-shrink: 0 !important;
@@ -1776,7 +1777,8 @@ body {
     width: auto !important;
     margin: 0 !important;
     padding: 0 !important;
-    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
 }
 
 .played-card-slot {
