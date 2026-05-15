@@ -1616,6 +1616,7 @@ body {
     grid-template-rows: none !important;
     height: auto !important;
     min-height: 100vh !important;
+    min-height: 100dvh !important; /* Gestisce dinamicamente la barra di ricerca/UI del browser */
     overflow-y: auto !important;
     overflow-x: hidden !important;
     padding: 50px 8px 15px 8px !important;
@@ -1692,7 +1693,7 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 60px 0 10px 0 !important;
+    margin: 45px 0 10px 0 !important; /* Ridotto leggermente per recuperare spazio verticale */
     padding: 0 0 0 15% !important;
     /* Spostamento proporzionale verso destra */
 }
@@ -1800,7 +1801,7 @@ body {
     transform: none !important;
     width: 90% !important;
     max-width: 170px !important;
-    height: 150px !important;
+    height: 120px !important; /* Ridotto per evitare overflow su schermi con barre UI ingombranti */
     margin: 15px auto !important;
     /* Spazio pulito sopra e sotto, centrato */
     padding: 0.5rem !important;
