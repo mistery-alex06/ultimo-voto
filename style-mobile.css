@@ -1695,8 +1695,8 @@ body {
     max-width: 100% !important;
     position: static !important;
     margin: 100px 0 5px 0 !important; /* Abbassate ulteriormente */
-    padding: 0 0 0 9% !important;
-    /* Spostamento proporzionale verso sinistra */
+    padding: 0 !important;
+    /* Rimosso padding per centramento perfetto */
 }
 
 .opponent-hand {
@@ -1731,7 +1731,7 @@ body {
 #turn-indicator {
     order: 7;
     margin: 10px 0 !important;
-    padding-left: 8% !important;
+    padding: 0 !important; /* Rimosso padding per centramento perfetto */
     position: static !important;
     width: 100% !important;
     text-align: center !important;
