@@ -324,7 +324,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 6rem; /* Abbassato per evitare i temi */
+    padding-top: 6rem;
+    /* Abbassato per evitare i temi */
     z-index: 10;
 }
 
@@ -353,9 +354,9 @@ body {
 }
 
 /* Forziamo gli elementi standard a occupare tutta la larghezza */
-.player-stats > .stat-row,
-.player-stats > .progress-bar-bg:not(.small-bar),
-.player-stats > div[style*="font-size:0.8rem"] {
+.player-stats>.stat-row,
+.player-stats>.progress-bar-bg:not(.small-bar),
+.player-stats>div[style*="font-size:0.8rem"] {
     grid-column: span 2;
 }
 
@@ -446,9 +447,20 @@ body {
     transition: width 0.5s;
 }
 
-.progress-bar.hp-bar { background: var(--hp-color); box-shadow: 0 0 10px var(--hp-color); }
-.progress-bar.atk-bar { background: var(--atk-color); box-shadow: 0 0 10px var(--atk-color); }
-.progress-bar.def-bar { background: var(--def-color); box-shadow: 0 0 10px var(--def-color); }
+.progress-bar.hp-bar {
+    background: var(--hp-color);
+    box-shadow: 0 0 10px var(--hp-color);
+}
+
+.progress-bar.atk-bar {
+    background: var(--atk-color);
+    box-shadow: 0 0 10px var(--atk-color);
+}
+
+.progress-bar.def-bar {
+    background: var(--def-color);
+    box-shadow: 0 0 10px var(--def-color);
+}
 
 .small-bar {
     height: 6px !important;
@@ -456,15 +468,16 @@ body {
     grid-column: span 1;
 }
 
-#btn-pass, #btn-attack {
+#btn-pass,
+#btn-attack {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     padding: 0.8rem 2.5rem;
     border-radius: 2rem;
     font-weight: 800;
     color: white;
-    border: 2px solid rgba(255,255,255,0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     margin: 10px;
     font-family: 'Outfit', sans-serif;
@@ -476,12 +489,14 @@ body {
     background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
 }
 
-#btn-pass:hover, #btn-attack:hover {
+#btn-pass:hover,
+#btn-attack:hover {
     transform: scale(1.1) translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-#btn-pass:active, #btn-attack:active {
+#btn-pass:active,
+#btn-attack:active {
     transform: scale(0.95);
 }
 
@@ -528,13 +543,16 @@ body {
 
 .opponent-hand {
     display: flex;
-    gap: -80px;
+    justify-content: center;
+    align-items: center;
+    gap: -40px;
+    /* Overlap per coerenza desktop */
 }
 
 .opponent-hand .card {
     width: 80px;
     height: 110px;
-    margin-left: -50px;
+    margin-left: 0;
 }
 
 .card.hidden {
@@ -741,7 +759,7 @@ body {
     border-radius: 1.2rem;
     padding: 12px;
     transition: transform 0.3s ease;
-    box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
@@ -754,7 +772,7 @@ body {
 .card-illustration svg {
     max-width: 90%;
     max-height: 90%;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }
 
 .card-name {
@@ -763,7 +781,7 @@ body {
     margin-bottom: 0.3rem;
     text-align: center;
     color: #fff;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .card-desc {
@@ -906,7 +924,8 @@ body {
 
 .deck-container {
     position: absolute;
-    right: 105%; /* Posizionato a sinistra rispetto al centro dell'arena */
+    right: 105%;
+    /* Posizionato a sinistra rispetto al centro dell'arena */
     left: auto;
     top: 50%;
     transform: translateY(-50%);
@@ -1565,191 +1584,319 @@ body {
     align-self: center;
 }
 
-#turn-indicator.turn-player { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
-#turn-indicator.turn-ai { color: var(--secondary); text-shadow: 0 0 10px var(--secondary-glow); }
+#turn-indicator.turn-player {
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+}
 
-/* --- REFACTORING LAYOUT MOBILE 1V1 (STRICT VERTICAL FLOW - NO OVERLAP) --- */
-    .game-container {
-        display: flex !important;
-        flex-direction: column !important;
-        grid-template-columns: none !important;
-        grid-template-rows: none !important;
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow-y: auto !important;
-        padding: 50px 10px 15px 10px !important; /* Padding top aumentato per i temi */
-        gap: 1.2rem !important;
-        position: relative !important;
-    }
+#turn-indicator.turn-ai {
+    color: var(--secondary);
+    text-shadow: 0 0 10px var(--secondary-glow);
+}
 
-    /* 1. Barra dei Temi */
-    .theme-selector {
-        position: absolute !important;
-        top: 10px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        margin: 0 !important;
-        order: 1;
-        display: flex !important;
-        gap: 0.5rem !important;
-        width: 100% !important;
-        justify-content: center !important;
-        z-index: 2000 !important;
-    }
+* {
+    box-sizing: border-box !important;
+}
 
-    /* 2. Statistiche (Incolonnate) */
-    .scoreboard {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 12px !important;
-        order: 2;
-        width: 100% !important;
-        position: static !important;
-    }
+html,
+body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
 
-    .player-stats {
-        width: 95% !important;
-        max-width: 95% !important;
-        margin: 0 !important;
-        position: static !important;
-        border-radius: 0.8rem !important;
-        padding: 10px !important;
-        font-size: 0.7rem !important;
-    }
+.game-container {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 50px 8px 15px 8px !important;
+    gap: 0.8rem !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
 
-    .player-stats .stat-row { margin: 4px 0 !important; }
-    .player-stats .value { font-size: 0.9rem !important; }
-    .player-stats .progress-bar-bg { height: 8px !important; }
+/* 1. Barra dei Temi */
+.theme-selector {
+    position: absolute !important;
+    top: 5px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    order: 1;
+    display: flex !important;
+    gap: 0.5rem !important;
+    width: 50% !important;
+    justify-content: center !important;
+    z-index: 2000 !important;
+}
 
-    /* 3. Carte AI Prof */
-    .opponent-hand-container { 
-        order: 3; 
-        padding: 5px 0 !important; 
-        position: static !important; 
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-    }
+/* 2. Statistiche (Affiancate) */
+.scoreboard {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    gap: 6px !important;
+    order: 2;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
 
-    /* 4. Indicatore Turno */
-    #turn-indicator { 
-        order: 4; 
-        margin: 5px 0 !important; 
-        position: static !important; 
-        width: 100% !important;
-        text-align: center !important;
-        font-size: 1.2rem !important;
-    }
-    
-    /* 5. Campo di Battaglia (Arena) */
-    .arena {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-        align-items: center !important;
-        order: 5;
-        width: 100% !important;
-        position: static !important;
-        gap: 10px !important;
-        padding: 5px 0 !important;
-    }
+.player-stats {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    max-width: 50% !important;
+    width: auto !important;
+    margin: 0 !important;
+    position: static !important;
+    border-radius: 0.5rem !important;
+    padding: 3px 4px !important;
+    font-size: 0.9rem !important;
+    overflow: hidden !important;
+    word-break: break-word !important;
+    max-height: 80px !important;
+}
 
-    .deck-container {
-        position: static !important;
-        width: 45px !important;
-        height: 65px !important;
-        margin: 0 !important;
-        transform: none !important;
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 2px solid var(--glass-border) !important;
-    }
-    
-    .deck-count { font-size: 0.7rem !important; }
+.player-stats .stat-row {
+    margin: 1px 0 !important;
+}
 
-    .played-cards {
-        flex-direction: row !important;
-        justify-content: center !important;
-        width: auto !important;
-        margin: 0 !important;
-        position: static !important;
-        gap: 5px !important;
-    }
+.player-stats .value {
+    font-size: 0.55rem !important;
+}
 
-    .played-card-slot {
-        width: 65px !important;
-        height: 90px !important;
-    }
+.player-stats .progress-bar-bg {
+    height: 3px !important;
+}
 
-    /* 6. Log Azioni */
-    .log-panel {
-        width: 100% !important;
-        position: static !important;
-        transform: none !important;
-        max-height: 100px !important; /* Rimpicciolito */
-        order: 6;
-        margin: 0 !important;
-        padding: 8px !important;
-    }
+/* 3. Carte AI Prof */
+.opponent-hand-container {
+    order: 3;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    margin: 60px 0 10px 0 !important;
+    padding: 0 0 0 180px !important;
+    /* Spinta ancora maggiore verso destra */
+}
 
-    /* 7. Pulsanti Player */
-    .hand-container {
-        display: flex !important;
-        flex-direction: column !important;
-        order: 7;
-        width: 100% !important;
-        height: auto !important;
-        position: static !important;
-        padding: 0 !important;
-    }
+.opponent-hand {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    transform: none !important;
+}
 
-    .controls-group {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 8px !important;
-        margin-bottom: 10px !important;
-    }
+.opponent-hand .card {
+    width: 58px !important;
+    height: 82px !important;
+    margin: 0 -8px !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+    transform: none !important;
+}
 
-    #btn-attack, #btn-pass {
-        width: auto !important;
-        min-width: 80px !important;
-        padding: 0.5rem 0.8rem !important;
-        font-size: 0.7rem !important;
-        margin: 0 !important;
-    }
-    
-    .potions-container {
-        gap: 5px !important;
-    }
-    
-    .potion {
-        width: 2.2rem !important;
-        height: 3rem !important;
-        padding: 2px !important;
-    }
+.opponent-hand .card:first-child {
+    margin-left: 0 !important;
+}
 
-    /* 8. Mano Player */
-    .hand {
-        width: 100% !important;
-        position: static !important;
-        margin-top: 10px !important;
-        display: flex !important;
-        justify-content: center !important;
-        padding-bottom: 30px !important;
-        order: 8;
-    }
+.opponent-hand .card:last-child {
+    margin-right: 0 !important;
+}
 
-    .card {
-        --card-width: 75px !important;
-        --card-height: 105px !important;
-        width: var(--card-width) !important;
-        height: var(--card-height) !important;
-        position: relative !important; /* Per gestire l'overlap delle carte nella mano */
-    }
-    
-    .card-illustration { height: 42% !important; }
-    .card-name { font-size: 0.55rem !important; }
-    .card-desc { font-size: 0.45rem !important; }
+/* 4. Indicatore Turno — posizionato tra arena e mano player */
+#turn-indicator {
+    order: 6;
+    margin: 15px 0 !important;
+    padding-left: 170px !important; /* Sposta la scritta verso destra */
+    position: static !important;
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 1.2rem !important;
+    z-index: 100 !important;
+}
+
+/* 5. Campo di Battaglia (Arena) */
+.arena {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    order: 5;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 0 0 80px !important;
+    /* Spostamento a destra */
+    gap: 15px !important;
+}
+
+.deck-container {
+    position: static !important;
+    width: 40px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    transform: none !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 2px solid var(--glass-border) !important;
+    flex-shrink: 0 !important;
+}
+
+.deck-count {
+    font-size: 0.65rem !important;
+}
+
+.played-cards {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 6px !important;
+}
+
+.played-card-slot {
+    width: 100px !important;
+    height: 120px !important;
+    margin: 0 !important;
+    border: 2px dashed rgba(255, 255, 255, 0.3) !important;
+    border-radius: 1rem !important;
+}
+
+/* Forza la dimensione delle carte giocate nell'arena */
+.arena .card {
+    width: 100px !important;
+    height: 120px !important;
+}
+
+/* 6. Log Azioni — ora dopo l'indicatore turno */
+.log-panel {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+    width: 90% !important;
+    max-width: 170px !important;
+    height: 150px !important;
+    margin: 15px auto !important;
+    /* Spazio pulito sopra e sotto, centrato */
+    padding: 0.5rem !important;
+    font-size: 0.75rem !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-radius: 0.5rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    overflow-y: auto !important;
+    order: 7;
+    /* Mantiene la priorità corretta nel flexbox */
+}
+
+/* 7. Pulsanti Player */
+.hand-container {
+    display: flex !important;
+    flex-direction: column !important;
+    order: 8;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    position: static !important;
+    padding: 0 !important;
+}
+
+.controls-group {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+}
+
+#btn-attack,
+#btn-pass {
+    width: auto !important;
+    min-width: 50px !important;
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.7rem !important;
+    margin: 0 !important;
+}
+
+.potions-container {
+    gap: 5px !important;
+}
+
+.potion {
+    width: 2.2rem !important;
+    height: 3rem !important;
+    padding: 2px !important;
+}
+
+/* 8. Mano Player */
+.hand {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    margin: 10px 0 !important;
+    padding: 0 !important;
+    order: 8;
+}
+
+.hand .card {
+    margin: 0 -6px !important;
+    position: relative !important;
+    width: 58px !important;
+    height: 82px !important;
+}
+
+.hand .card:first-child {
+    margin-left: 0 !important;
+}
+
+.hand .card:last-child {
+    margin-right: 0 !important;
+}
+
+
+.card-illustration {
+    height: 55% !important;
+}
+
+.card-name {
+    font-size: 0.55rem !important;
+}
+
+.card-desc {
+    font-size: 0.45rem !important;
+}
+
+/* Testo leggibile solo per le carte al centro (arena) */
+.arena .card-name {
+    font-size: 0.75rem !important;
+}
+
+.arena .card-desc {
+    font-size: 0.65rem !important;
+}
+
