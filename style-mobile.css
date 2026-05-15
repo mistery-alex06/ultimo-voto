@@ -1795,25 +1795,9 @@ body {
     height: 120px !important;
 }
 
-/* 6. Log Azioni — ora dopo l'indicatore turno */
+/* 6. Log Azioni — Nascosto su mobile per recuperare spazio */
 .log-panel {
-    position: relative !important;
-    left: 0 !important;
-    top: 0 !important;
-    transform: none !important;
-    width: 90% !important;
-    max-width: 170px !important;
-    height: 120px !important; /* Ridotto per evitare overflow su schermi con barre UI ingombranti */
-    margin: 15px auto !important;
-    /* Spazio pulito sopra e sotto, centrato */
-    padding: 0.5rem !important;
-    font-size: 0.75rem !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-    border-radius: 0.5rem !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    overflow-y: auto !important;
-    order: 6;
-    /* Mantiene la priorità corretta nel flexbox */
+    display: none !important;
 }
 
 /* 7. Pulsanti Player */
