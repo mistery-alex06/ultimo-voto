@@ -76,7 +76,7 @@ class Game {
     }
 
     getSerializableState() {
-        return {
+        const state = {
             gameMode: this.gameMode,
             gameRound: this.gameRound,
             cardsDrawn: this.cardsDrawn,
@@ -95,9 +95,38 @@ class Game {
                 lastPlayedCard: p.lastPlayedCard ? p.lastPlayedCard.name : null
             }]))
         };
+
+        // MULTIPLAYER SYNC: Se siamo Guest, invertiamo la prospettiva prima di inviare il dato al DB
+        if (this.isMultiplayer && typeof isHost !== 'undefined' && !isHost) {
+            const p1 = state.players['player1'];
+            const p2 = state.players['player2'];
+            if (p1 && p2) {
+                p1.id = 'player2'; p1.team = 'B';
+                p2.id = 'player1'; p2.team = 'A';
+                state.players['player1'] = p2;
+                state.players['player2'] = p1;
+            }
+            if (state.turn === 'player1') { state.turn = 'player2'; state.turnIndex = 1; }
+            else if (state.turn === 'player2') { state.turn = 'player1'; state.turnIndex = 0; }
+        }
+
+        return state;
     }
 
     loadState(stateData) {
+        // MULTIPLAYER SYNC: Se siamo Guest, invertiamo la prospettiva dei dati in arrivo dal DB
+        if (this.isMultiplayer && typeof isHost !== 'undefined' && !isHost) {
+            const p1 = stateData.players['player1'];
+            const p2 = stateData.players['player2'];
+            if (p1 && p2) {
+                p1.id = 'player2'; p1.team = 'B';
+                p2.id = 'player1'; p2.team = 'A';
+                stateData.players['player1'] = p2;
+                stateData.players['player2'] = p1;
+            }
+            if (stateData.turn === 'player1') { stateData.turn = 'player2'; stateData.turnIndex = 1; }
+            else if (stateData.turn === 'player2') { stateData.turn = 'player1'; stateData.turnIndex = 0; }
+        }
         this.gameMode = stateData.gameMode;
         this.gameRound = stateData.gameRound;
         this.turnIndex = stateData.turnIndex;
