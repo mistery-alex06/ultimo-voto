@@ -673,7 +673,6 @@ window.onCardClicked = (idx) => {
         targetingAttack = false; 
         updateUI();
     }
-    }
 };
 
 // --- MULTIPLAYER ONLINE ---
