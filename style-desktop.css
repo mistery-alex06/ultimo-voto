@@ -621,8 +621,9 @@ body {
     width: 100%;
 }
 
-.potions-container {
+#player-potions {
     display: flex;
+    flex-direction: row;
     gap: 1rem;
 }
 
