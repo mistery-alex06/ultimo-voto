@@ -613,6 +613,14 @@ window.startGame = function (forcedMode = null, isMultiplayer = false, p1Name = 
     if (isMultiplayer && p1Name && p2Name) {
         game.players.player1.name = isHost ? p1Name : p2Name;
         game.players.player2.name = isHost ? p2Name : p1Name;
+
+        if (isHost) {
+            // L'Host inizializza la partita sul DB
+            if (typeof updateGameState === 'function') updateGameState(game.getSerializableState());
+        } else {
+            // Il Guest aspetta la prima mossa dell'Host, bloccando l'input locale
+            game.turn = 'player2';
+        }
     }
 
     game.onUpdate = updateUI;
@@ -632,12 +640,16 @@ window.toggleOfflineMode = () => {
 
 // --- INTERAZIONI GIOCO ---
 window.onAttackClicked = () => { targetingMode = true; targetingAttack = true; updateUI(); };
-window.onPassClicked = () => game.endTurn();
+window.onPassClicked = () => {
+    game.endTurn();
+    if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
+};
 window.onTargetClicked = (id) => {
     if (!targetingMode) return;
     if (targetingAttack) game.executeAttack(game.turn, id);
     else if (selectedCardIndex !== null) game.playCard(game.turn, selectedCardIndex, id);
     targetingMode = false; targetingAttack = false; selectedCardIndex = null; updateUI();
+    if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
 };
 window.onCardClicked = (idx) => {
     if (targetingMode) return;
@@ -654,11 +666,13 @@ window.onCardClicked = (idx) => {
         const targetId = isPositive ? 'player1' : 'player2';
         game.playCard(game.turn, idx, targetId);
         updateUI();
+        if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
     } else {
         selectedCardIndex = idx; 
         targetingMode = true; 
         targetingAttack = false; 
         updateUI();
+    }
     }
 };
 
@@ -829,9 +843,9 @@ function renderHands(active) {
         });
     }
 
-    let aiCount = 0;
-    Object.values(game.players).forEach(p => { if (p.isAI) aiCount += p.hand.length; });
-    for (let i = 0; i < Math.min(5, aiCount); i++) {
+    let oppCount = 0;
+    Object.values(game.players).forEach(p => { if (p.id !== 'player1') oppCount += p.hand.length; });
+    for (let i = 0; i < Math.min(5, oppCount); i++) {
         const d = document.createElement('div');
         d.className = 'card back';
         elements.oppHand.appendChild(d);
@@ -845,7 +859,11 @@ function renderPotions(active) {
             const d = document.createElement('div');
             d.className = 'potion';
             d.innerHTML = `<span>🧪</span><div style="font-size:0.5rem">${p.name}</div>`;
-            d.onclick = () => { game.usePotion(game.turn, i); updateUI(); };
+            d.onclick = () => { 
+                game.usePotion(game.turn, i); 
+                updateUI(); 
+                if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
+            };
             elements.potions.appendChild(d);
         });
     }
