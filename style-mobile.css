@@ -1694,8 +1694,8 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 75px 0 5px 0 !important; /* Abbassate ulteriormente */
-    padding: 0 0 0 18% !important; /* Spostate leggermente più a destra */
+    margin: 100px 0 5px 0 !important; /* Abbassate ulteriormente */
+    padding: 0 0 0 18% !important;
     /* Spostamento proporzionale verso destra */
 }
 
@@ -1727,15 +1727,15 @@ body {
     margin-right: 0 !important;
 }
 
-/* 4. Indicatore Turno — posizionato tra arena e mano player */
+/* 4. Indicatore Turno — ora sotto il log */
 #turn-indicator {
-    order: 6;
-    margin: 15px 0 !important;
-    padding-left: 17% !important; /* Spostamento leggermente più a destra */
+    order: 7;
+    margin: 10px 0 !important;
+    padding-left: 17% !important;
     position: static !important;
     width: 100% !important;
     text-align: center !important;
-    font-size: 1.2rem !important;
+    font-size: 1.1rem !important;
     z-index: 100 !important;
 }
 
@@ -1812,7 +1812,7 @@ body {
     border-radius: 0.5rem !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     overflow-y: auto !important;
-    order: 7;
+    order: 6;
     /* Mantiene la priorità corretta nel flexbox */
 }
 
