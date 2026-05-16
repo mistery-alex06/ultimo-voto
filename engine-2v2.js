@@ -11,7 +11,6 @@ let valid2v2TargetIds = [];
 function isCardPositive(card) {
     if (!card.effect) return false;
     const e = card.effect;
-    // Se ha effetti che aiutano (vita, atk, def, immunità, regen)
     return !!(e.life || e.atk || e.def || e.immunity || e.regen || e.atkMultiplier || e.nextAtkMultiplier || e.directDamageImmunity || e.cancelLastAttack || e.avoidNegativeEffect);
 }
 
@@ -51,7 +50,6 @@ class Game2v2 {
             state: 'alive'
         });
 
-        // 2v2: Player 1 & 2 are Humans (Team A), Player 3 & 4 are AI (Team B)
         this.players = {
             player1: createPlayer('player1', sessionStorage.getItem('username') || 'Giocatore 1', false, 'A', personalities['player1']),
             player2: createPlayer('player2', 'Giocatore 2 (Alleato)', false, 'A', personalities['player2']),
@@ -105,7 +103,6 @@ class Game2v2 {
     }
 
     getDefaultTarget(player, card) {
-        // Logica di targeting automatico per facilitare il gioco
         if (card.targetType === 'ally' || card.targetType === 'self' || (card.effect && (card.effect.life || card.effect.atk || card.effect.def))) {
             let allies = this.teams[player.team].map(id => this.players[id]).filter(p => p.state === 'alive');
             allies.sort((a, b) => a.hp - b.hp);
@@ -119,7 +116,7 @@ class Game2v2 {
     }
 
     playCard(playerId, cardIndex, targetId) {
-        if (this.gameOver) return;
+        if (this.gameOver || playerId !== this.turn) return;
         const player = this.players[playerId];
         if (player.status.stunned > 0) {
             this.addToLog(`${player.name} è bloccato e salta il turno!`);
@@ -194,7 +191,6 @@ class Game2v2 {
         }
         if (effect.stun && !target.status.debuffImmunity) target.status.stunned += effect.stun;
         
-        // Cap delle statistiche
         buffTarget.atk = Math.min(600, Math.max(0, buffTarget.atk));
         buffTarget.def = Math.min(600, Math.max(0, buffTarget.def));
         target.hp = Math.max(0, target.hp);
@@ -202,7 +198,7 @@ class Game2v2 {
     }
 
     executeAttack(playerId, targetId) {
-        if (this.gameOver) return;
+        if (this.gameOver || playerId !== this.turn) return;
         const attacker = this.players[playerId];
         const defender = this.players[targetId];
         
@@ -228,6 +224,7 @@ class Game2v2 {
     }
 
     usePotion(playerId, potionIndex) {
+        if (this.gameOver || playerId !== this.turn) return;
         const player = this.players[playerId];
         if (player.state === 'defeated' || player.potionsUsedThisTurn >= 2) return;
         const potion = player.potions.splice(potionIndex, 1)[0];
@@ -251,7 +248,6 @@ class Game2v2 {
         const nextPlayer = this.players[this.turn];
         nextPlayer.potionsUsedThisTurn = 0;
         
-        // Rigenerazione passiva o altro...
         if (nextPlayer.status.regen > 0) {
             nextPlayer.hp = Math.min(this.maxHp, nextPlayer.hp + 100);
             nextPlayer.status.regen--;
@@ -270,7 +266,6 @@ class Game2v2 {
         if (this.gameOver) return;
         const ai = this.players[playerId];
         
-        // Semplice logica AI
         let targets = this.teams[ai.team === 'A' ? 'B' : 'A'].map(id => this.players[id]).filter(p => p.state === 'alive');
         if (targets.length > 0) {
             let t = targets.sort((a, b) => a.hp - b.hp)[0];
@@ -281,7 +276,7 @@ class Game2v2 {
         }
 
         if (ai.hand.length > 0) {
-            const bestIdx = 0; // Gioca la prima carta per semplicità in questa versione
+            const bestIdx = 0;
             this.playCard(playerId, bestIdx, this.getDefaultTarget(ai, ai.hand[bestIdx])?.id);
         } else {
             this.endTurn();
@@ -314,21 +309,14 @@ class Game2v2 {
     }
 }
 
-// --- RENDERING HELPERS (Ripristinati da engine.js) ---
 function getCardIllustration2v2(c) {
     const id = c.id;
     const type = c.type;
     const color = type === 'attack' ? '#f43f5e' : (type === 'defense' ? '#3b82f6' : '#a855f7');
-    
     let seed = id * 1337;
-    const rnd = () => {
-        seed = (seed * 9301 + 49297) % 233280;
-        return seed / 233280;
-    };
-
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
     let pixels = '';
     const templateIdx = id % 4;
-
     if (templateIdx === 0) {
         pixels += `<rect x="4" y="4" width="8" height="10" fill="${color}"/>`;
         pixels += `<rect x="12" y="4" width="2" height="10" fill="rgba(255,255,255,0.3)"/>`;
@@ -340,50 +328,35 @@ function getCardIllustration2v2(c) {
     } else if (templateIdx === 2) {
         pixels += `<rect x="4" y="4" width="10" height="12" rx="1" fill="${color}"/>`;
         pixels += `<rect x="6" y="6" width="6" height="3" fill="#1a1a1a"/>`;
-        pixels += `<rect x="5" y="10" width="1" height="1" fill="rgba(255,255,255,0.5)"/>`;
-        pixels += `<rect x="7" y="10" width="1" height="1" fill="rgba(255,255,255,0.5)"/>`;
-        pixels += `<rect x="9" y="10" width="1" height="1" fill="rgba(255,255,255,0.5)"/>`;
     } else {
         pixels += `<rect x="4" y="3" width="10" height="13" fill="white"/>`;
-        pixels += `<rect x="5" y="4" width="8" height="11" fill="none" stroke="${color}" stroke-width="0.5"/>`;
-        for(let i=0; i<4; i++) pixels += `<rect x="6" y="${6+i*2}" width="6" height="0.5" fill="#eee"/>`;
     }
-    
     return `<svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">${pixels}</svg>`;
 }
 
 function createCardElement2v2(c, interactive, hidden, idx) {
     const d = document.createElement('div');
     d.className = `card ${c.type || ''} ${hidden ? 'hidden' : ''} ${targeting2v2Mode && selected2v2CardIndex === idx ? 'selected' : ''}`;
-    
     if (!hidden && c.name) {
         d.innerHTML = `
-            <div class="card-illustration">
-                ${getCardIllustration2v2(c)}
-            </div>
+            <div class="card-illustration">${getCardIllustration2v2(c)}</div>
             <div class="card-name">${c.name}</div>
             <div class="card-desc">${c.description}</div>
         `;
     }
-    
-    if (interactive && idx !== null) {
-        d.onclick = () => onCard2v2Clicked(idx);
-    }
+    if (interactive && idx !== null) d.onclick = () => onCard2v2Clicked(idx);
     return d;
 }
 
-// --- UI LOGIC 2V2 ---
 window.startGame2v2 = function() {
     window.switchScreen('game-container', 'active-screen-block');
     document.body.classList.remove('mode-1v1');
     document.body.classList.add('mode-2v2', 'in-game');
-    
     game2v2 = new Game2v2(CARDS);
     game2v2.onUpdate = updateUI2v2;
     game2v2.onCardDraw = typeof animateCardDraw !== 'undefined' ? animateCardDraw : null;
     game2v2.onAnimation = typeof playActionAnimation !== 'undefined' ? playActionAnimation : null;
     game2v2.onParticle = typeof spawnDamageParticles !== 'undefined' ? spawnDamageParticles : null;
-
     window.dispatchEvent(new Event('resize'));
     updateUI2v2();
 };
@@ -391,43 +364,24 @@ window.startGame2v2 = function() {
 function updateUI2v2() {
     if (!game2v2) return;
     const active = game2v2.players[game2v2.turn];
-    
-    // Sincronizzazione con gli elementi comuni
     if (elements.deckCount) elements.deckCount.innerText = game2v2.sharedDeck.length;
-    
     buildScoreboard2v2();
     buildArena2v2();
-    
     if (elements.log) {
-        elements.log.innerHTML = game2v2.log.slice().reverse()
-            .map(m => `<div class="log-entry">${m}</div>`).join('');
+        elements.log.innerHTML = game2v2.log.slice().reverse().map(m => `<div class="log-entry">${m}</div>`).join('');
     }
-
     const attackBtn = document.getElementById('btn-attack');
     const passBtn = document.getElementById('btn-pass');
     const potionsContainer = document.querySelector('.potions-container');
-
     const canInteract = !active.isAI && !targeting2v2Mode;
-
-    if (attackBtn) {
-        attackBtn.style.display = (canInteract && active.atk > 0 && active.status.stunned === 0) ? 'flex' : 'none';
-    }
-    if (passBtn) {
-        passBtn.style.display = canInteract ? 'flex' : 'none';
-    }
-    if (potionsContainer) {
-        potionsContainer.style.display = canInteract ? 'flex' : 'none';
-    }
-
+    if (attackBtn) attackBtn.style.display = (canInteract && active.atk > 0 && active.status.stunned === 0) ? 'flex' : 'none';
+    if (passBtn) passBtn.style.display = canInteract ? 'flex' : 'none';
+    if (potionsContainer) potionsContainer.style.display = canInteract ? 'flex' : 'none';
     renderHands2v2(active);
     renderPotions2v2(active);
-
     if (game2v2.gameOver) {
         if (elements.victoryText) elements.victoryText.innerText = game2v2.log[game2v2.log.length - 1];
-        if (elements.overlay) {
-            elements.overlay.classList.remove('hidden');
-            elements.overlay.classList.add('show');
-        }
+        if (elements.overlay) { elements.overlay.classList.remove('hidden'); elements.overlay.classList.add('show'); }
     }
 }
 
@@ -435,62 +389,36 @@ function buildScoreboard2v2() {
     const sb = document.getElementById('scoreboard');
     if (!sb) return;
     sb.innerHTML = '';
-
-    const teamA = document.createElement('div');
-    teamA.className = 'team-container team-a';
-    const teamB = document.createElement('div');
-    teamB.className = 'team-container team-b';
-
+    const teamA = document.createElement('div'); teamA.className = 'team-container team-a';
+    const teamB = document.createElement('div'); teamB.className = 'team-container team-b';
     Object.values(game2v2.players).forEach(p => {
         const div = document.createElement('div');
         let targetClass = '';
         if (targeting2v2Mode && valid2v2TargetIds.includes(p.id)) {
-            // Regola richiesta: Verde sui player umani (Team A), Viola sui prof AI (Team B)
             if (p.team === 'A') targetClass = 'valid-target-buff';
             else targetClass = 'valid-target-ai';
         }
-
         div.className = `player-stats ${p.team === 'B' ? 'opponent' : ''} ${p.state === 'defeated' ? 'defeated' : ''} ${targetClass}`;
         div.onclick = () => onTarget2v2Clicked(p.id);
-        
         div.innerHTML = `
-            <div class="stat-row">
-                <span>${p.name}</span>
-                <span>🧪 x${p.potions.length}</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar hp-bar" style="width:${(p.hp / game2v2.maxHp) * 100}%"></div>
-            </div>
-            <div class="progress-bar-bg small-bar">
-                <div class="progress-bar atk-bar" style="width:${(Math.min(p.atk, 600) / 600) * 100}%"></div>
-            </div>
-            <div class="progress-bar-bg small-bar">
-                <div class="progress-bar def-bar" style="width:${(Math.min(p.def, 600) / 600) * 100}%"></div>
-            </div>
-            <div style="font-size:0.8rem; margin-top: 5px;">
-                ${Math.floor(p.hp)} HP | <span style="color:var(--atk-color)">ATK ${p.atk}</span> | <span style="color:var(--def-color)">DEF ${p.def}</span>
-            </div>
+            <div class="stat-row"><span>${p.name}</span><span>🧪 x${p.potions.length}</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar hp-bar" style="width:${(p.hp / game2v2.maxHp) * 100}%"></div></div>
+            <div class="progress-bar-bg small-bar"><div class="progress-bar atk-bar" style="width:${(Math.min(p.atk, 600) / 600) * 100}%"></div></div>
+            <div class="progress-bar-bg small-bar"><div class="progress-bar def-bar" style="width:${(Math.min(p.def, 600) / 600) * 100}%"></div></div>
+            <div style="font-size:0.8rem; margin-top: 5px;">${Math.floor(p.hp)} HP | <span style="color:var(--atk-color)">ATK ${p.atk}</span> | <span style="color:var(--def-color)">DEF ${p.def}</span></div>
         `;
-        
-        if (p.team === 'A') teamA.appendChild(div);
-        else teamB.appendChild(div);
+        if (p.team === 'A') teamA.appendChild(div); else teamB.appendChild(div);
     });
-
-    sb.appendChild(teamA);
-    sb.appendChild(teamB);
+    sb.appendChild(teamA); sb.appendChild(teamB);
 }
 
 function buildArena2v2() {
     const area = document.getElementById('played-cards-area');
     if (!area) return;
     area.innerHTML = '';
-    
     Object.values(game2v2.players).forEach(p => {
-        const slot = document.createElement('div');
-        slot.className = 'played-card-slot';
-        if (p.lastPlayedCard) {
-            slot.appendChild(createCardElement2v2(p.lastPlayedCard, false, false, null));
-        }
+        const slot = document.createElement('div'); slot.className = 'played-card-slot';
+        if (p.lastPlayedCard) slot.appendChild(createCardElement2v2(p.lastPlayedCard, false, false, null));
         area.appendChild(slot);
     });
 }
@@ -500,39 +428,20 @@ function renderHands2v2(player) {
     const oppHandEl = document.getElementById('opponent-hand');
     if (handEl) handEl.innerHTML = '';
     if (oppHandEl) oppHandEl.innerHTML = '';
-
-    // Determiniamo quale mano mostrare nel contenitore principale
-    // Se è il turno di un umano, mostriamo la sua mano.
-    // Se è il turno dell'AI, mostriamo la mano di Player 1 (come riferimento) ma disabilitata.
     let displayPlayer = player;
     const isHumanTurn = !player.isAI;
-    
-    if (!isHumanTurn) {
-        displayPlayer = game2v2.players['player1']; // Mostra P1 durante i turni AI
-    }
-
+    if (!isHumanTurn) displayPlayer = game2v2.players['player1'];
     if (displayPlayer && displayPlayer.hand) {
         displayPlayer.hand.forEach((card, idx) => {
             const cardEl = createCardElement2v2(card, isHumanTurn, false, idx);
-            if (!isHumanTurn) {
-                cardEl.style.opacity = '0.5';
-                cardEl.style.pointerEvents = 'none';
-                cardEl.style.filter = 'grayscale(0.5)';
-            }
+            if (!isHumanTurn) { cardEl.style.opacity = '0.5'; cardEl.style.pointerEvents = 'none'; cardEl.style.filter = 'grayscale(0.5)'; }
             handEl.appendChild(cardEl);
         });
     }
-
-    // Carte degli altri (retro) - Ripristinato cap a 5 per evitare affollamento
     let oppCount = 0;
-    Object.values(game2v2.players).forEach(p => { 
-        if (p.id !== displayPlayer.id) oppCount += p.hand.length; 
-    });
-    
+    Object.values(game2v2.players).forEach(p => { if (p.id !== displayPlayer.id) oppCount += p.hand.length; });
     for (let i = 0; i < Math.min(5, oppCount); i++) {
-        const card = document.createElement('div');
-        card.className = 'card back';
-        oppHandEl.appendChild(card);
+        const card = document.createElement('div'); card.className = 'card back'; oppHandEl.appendChild(card);
     }
 }
 
@@ -542,73 +451,40 @@ function renderPotions2v2(player) {
     potEl.innerHTML = '';
     if (!player.isAI) {
         player.potions.forEach((p, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'potion';
-            btn.innerText = p.name;
+            const btn = document.createElement('button'); btn.className = 'potion'; btn.innerText = p.name;
             btn.onclick = () => game2v2.usePotion(player.id, idx);
             potEl.appendChild(btn);
         });
     }
 }
 
-// --- EVENT HANDLERS 2V2 ---
 function onCard2v2Clicked(idx) {
-    // Se clicco la stessa carta già selezionata, deseleziono
     if (targeting2v2Mode && selected2v2CardIndex === idx) {
-        targeting2v2Mode = false;
-        selected2v2CardIndex = null;
-        valid2v2TargetIds = [];
-        updateUI2v2();
-        return;
+        targeting2v2Mode = false; selected2v2CardIndex = null; valid2v2TargetIds = []; updateUI2v2(); return;
     }
-
     const player = game2v2.players[game2v2.turn];
     const card = player.hand[idx];
-    
-    selected2v2CardIndex = idx;
-    targeting2v2Mode = true;
-    targeting2v2Attack = false;
-
-    // Determina bersagli validi
+    selected2v2CardIndex = idx; targeting2v2Mode = true; targeting2v2Attack = false;
     valid2v2TargetIds = [];
     const isPositive = isCardPositive(card);
     const isGlobal = isCardGlobal(card);
-
-    if (isGlobal) {
-        valid2v2TargetIds = ['player1', 'player2', 'player3', 'player4'];
-    } else if (isPositive || card.targetType === 'ally' || card.targetType === 'self') {
-        valid2v2TargetIds = game2v2.teams['A'];
-    } else {
-        valid2v2TargetIds = game2v2.teams['B'];
-    }
-
+    if (isGlobal) valid2v2TargetIds = ['player1', 'player2', 'player3', 'player4'];
+    else if (isPositive || card.targetType === 'ally' || card.targetType === 'self') valid2v2TargetIds = game2v2.teams['A'];
+    else valid2v2TargetIds = game2v2.teams['B'];
     updateUI2v2();
 }
 
 function onTarget2v2Clicked(id) {
     if (!targeting2v2Mode) return;
     if (!valid2v2TargetIds.includes(id)) return;
-
-    if (targeting2v2Attack) {
-        game2v2.executeAttack(game2v2.turn, id);
-    } else if (selected2v2CardIndex !== null) {
-        game2v2.playCard(game2v2.turn, selected2v2CardIndex, id);
-    }
-    
-    targeting2v2Mode = false;
-    targeting2v2Attack = false;
-    selected2v2CardIndex = null;
-    valid2v2TargetIds = [];
-    updateUI2v2();
+    if (targeting2v2Attack) game2v2.executeAttack(game2v2.turn, id);
+    else if (selected2v2CardIndex !== null) game2v2.playCard(game2v2.turn, selected2v2CardIndex, id);
+    targeting2v2Mode = false; targeting2v2Attack = false; selected2v2CardIndex = null; valid2v2TargetIds = []; updateUI2v2();
 }
 
 window.onAttack2v2Clicked = () => {
-    targeting2v2Mode = true;
-    targeting2v2Attack = true;
-    valid2v2TargetIds = game2v2.teams['B']; // Solo nemici per attacco base
-    updateUI2v2();
+    targeting2v2Mode = true; targeting2v2Attack = true;
+    valid2v2TargetIds = game2v2.teams['B']; updateUI2v2();
 };
 
-window.onPass2v2Clicked = () => {
-    game2v2.endTurn();
-};
+window.onPass2v2Clicked = () => { game2v2.endTurn(); };

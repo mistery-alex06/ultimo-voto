@@ -220,7 +220,7 @@ class Game {
     }
 
     playCard(playerId, cardIndex, targetId) {
-        if (this.gameOver) return;
+        if (this.gameOver || playerId !== this.turn) return;
         const player = this.players[playerId];
         if (player.status.stunned > 0) {
             this.addToLog(`${player.name} è bloccato e salta il turno!`);
@@ -313,7 +313,7 @@ class Game {
     }
 
     executeAttack(playerId, targetId) {
-        if (this.gameOver) return;
+        if (this.gameOver || playerId !== this.turn) return;
         const attacker = this.players[playerId];
         const defender = this.players[targetId];
         let atkMult = attacker.status.nextAtkMultiplier * this.getPersonalityAtkMultiplier(attacker);
@@ -352,7 +352,7 @@ class Game {
     }
 
     usePotion(playerId, potionIndex) {
-        if (this.gameOver) return;
+        if (this.gameOver || playerId !== this.turn) return;
         if (this.activeEvents.some(e => e.type === 'debuff' && e.effect === 'no_potions')) {
             this.addToLog(`Non puoi usare pozioni: Compiti in Classe!`); return;
         }
