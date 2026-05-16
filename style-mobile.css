@@ -147,7 +147,7 @@ body {
     border-radius: 3rem;
     backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .theme-selector button {
@@ -1616,8 +1616,10 @@ body {
     grid-template-rows: none !important;
     height: auto !important;
     min-height: 100vh !important;
-    min-height: 100dvh !important; /* Gestisce dinamicamente la barra di ricerca/UI del browser */
-    overflow: hidden !important; /* Disabilita lo scorrimento */
+    min-height: 100dvh !important;
+    /* Gestisce dinamicamente la barra di ricerca/UI del browser */
+    overflow: hidden !important;
+    /* Disabilita lo scorrimento */
     height: 100vh !important;
     height: 100dvh !important;
     padding: 45px 8px 10px 8px !important;
@@ -1646,31 +1648,30 @@ body {
 .scoreboard {
     display: flex !important;
     flex-direction: row !important;
-    justify-content: center !important;
+    justify-content: space-around !important;
     align-items: stretch !important;
-    gap: 6px !important;
+    gap: 4px !important;
     order: 2;
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    padding: 0 !important;
+    padding: 4px !important;
     margin: 0 !important;
-    overflow: hidden !important;
 }
 
 .player-stats {
-    flex: 1 1 0% !important;
-    min-width: 0 !important;
-    max-width: 50% !important;
-    width: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 0 0 46% !important; /* Forza la larghezza al 46% della vista */
+    width: 46vw !important;
+    max-width: 46vw !important;
     margin: 0 !important;
     position: static !important;
-    border-radius: 0.5rem !important;
-    padding: 3px 4px !important;
-    font-size: 0.9rem !important;
+    border-radius: 0.8rem !important;
+    padding: 10px 8px !important;
+    font-size: 0.85rem !important;
     overflow: hidden !important;
-    word-break: break-word !important;
-    max-height: 80px !important;
+    min-height: 120px !important;
 }
 
 .player-stats .stat-row {
@@ -1678,7 +1679,7 @@ body {
 }
 
 .player-stats .value {
-    font-size: 0.55rem !important;
+    font-size: 0.8rem !important; /* Testo più grande e leggibile */
 }
 
 .player-stats .progress-bar-bg {
@@ -1694,7 +1695,8 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin: 100px 0 5px 0 !important; /* Abbassate ulteriormente */
+    margin: 100px 0 5px 0 !important;
+    /* Abbassate ulteriormente */
     padding: 0 !important;
     /* Rimosso padding per centramento perfetto */
 }
@@ -1731,7 +1733,8 @@ body {
 #turn-indicator {
     order: 7;
     margin: 10px 0 !important;
-    padding: 0 !important; /* Rimosso padding per centramento perfetto */
+    padding: 0 !important;
+    /* Rimosso padding per centramento perfetto */
     position: static !important;
     width: 100% !important;
     text-align: center !important;
@@ -1890,4 +1893,3 @@ body {
 .arena .card-desc {
     font-size: 0.65rem !important;
 }
-
