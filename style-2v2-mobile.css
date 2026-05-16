@@ -75,24 +75,52 @@ body.mode-2v2 .played-card-slot:nth-child(4) {
     grid-row: 1;
 }
 
-body.mode-2v2 .played-card-slot {
-    width: 70px !important;
-    height: 100px !important;
+/* Mano Avversaria (AI Prof) su Mobile 2v2 */
+body.mode-2v2 .opponent-hand-container {
+    top: 5rem !important; /* Abbassate per non coprire lo scoreboard */
 }
 
-body.mode-2v2 .played-card-slot .card {
-    width: 70px !important;
-    height: 100px !important;
-    padding: 5px !important;
-    border-radius: 10px !important;
+body.mode-2v2 .opponent-hand .card.back {
+    width: 3.5rem !important; /* Rimpicciolite */
+    height: 5rem !important;
+}
+
+/* Mano del Giocatore su Mobile 2v2 */
+body.mode-2v2 .hand .card {
+    width: 5.5rem !important; /* Ingrandite leggermente */
+    height: 8rem !important;
+    padding: 0.6rem !important;
 }
 
 body.mode-2v2 .card-name {
-    font-size: 0.5rem !important;
+    font-size: 0.55rem !important;
 }
 
 body.mode-2v2 .card-desc {
-    display: none !important; /* Nascondiamo la descrizione su mobile per risparmiare spazio nell'arena */
+    font-size: 0.5rem !important;
+    display: block !important; /* Ripristiniamo la descrizione leggibile */
+}
+
+body.mode-2v2 .card-illustration {
+    height: 35px !important; /* Disegno più grande */
+}
+
+body.mode-2v2 .card-illustration svg {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+/* Arena 2v2 Mobile */
+body.mode-2v2 .played-card-slot {
+    width: 60px !important;
+    height: 85px !important;
+}
+
+body.mode-2v2 .played-card-slot .card {
+    width: 60px !important;
+    height: 85px !important;
+    padding: 4px !important;
+    border-radius: 8px !important;
 }
 
 /* Glow Targeting su Mobile */
@@ -109,6 +137,7 @@ body.mode-2v2 .card-desc {
 /* Altri aggiustamenti mobile */
 body.mode-2v2 .controls-group {
     gap: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
 }
 
 body.mode-2v2 #btn-attack, 
