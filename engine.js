@@ -625,25 +625,33 @@ window.toggleOfflineMode = () => {
 };
 
 // --- INTERAZIONI GIOCO ---
-window.onAttackClicked = () => { targetingMode = true; targetingAttack = true; updateUI(); };
+window.onAttackClicked = () => { 
+    // In 1v1 l'attacco è automatico sull'unico avversario
+    const enemyId = game.turn === 'player1' ? 'player2' : 'player1';
+    game.executeAttack(game.turn, enemyId);
+    updateUI(); 
+    if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
+};
+
 window.onPassClicked = () => {
     game.endTurn();
     if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
 };
+
 window.onTargetClicked = (id) => {
+    // Rimane per compatibilità o utilizzi futuri, ma non più triggerato in 1v1 standard
     if (!targetingMode) return;
     if (targetingAttack) game.executeAttack(game.turn, id);
     else if (selectedCardIndex !== null) game.playCard(game.turn, selectedCardIndex, id);
     targetingMode = false; targetingAttack = false; selectedCardIndex = null; updateUI();
     if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
 };
+
 window.onCardClicked = (idx) => {
-    if (targetingMode) return;
-    
-    selectedCardIndex = idx; 
-    targetingMode = true; 
-    targetingAttack = false; 
+    // In 1v1 la carta viene giocata istantaneamente sul bersaglio di default
+    game.playCard(game.turn, idx);
     updateUI();
+    if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
 };
 
 // --- MULTIPLAYER ONLINE ---
