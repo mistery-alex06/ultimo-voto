@@ -59,7 +59,7 @@ body.mode-2v2 #played-cards-area {
     gap: 10px !important;
     width: 100% !important;
     padding: 10px !important;
-    margin-top: 10px !important;
+    margin-top: 20px !important; 
 }
 
 /* Ordinamento: Prof sopra, Player sotto */
@@ -75,14 +75,28 @@ body.mode-2v2 .played-card-slot:nth-child(4) {
     grid-row: 1;
 }
 
-/* Mano Avversaria (AI Prof) su Mobile 2v2 */
+/* Mano Avversaria (AI Prof) su Mobile 2v2 - CORRETTA E IN FLUSSO */
 body.mode-2v2 .opponent-hand-container {
-    top: 5rem !important; /* Abbassate per non coprire lo scoreboard */
+    position: relative !important; /* Basta trucchi volanti assoluti! */
+    top: 0 !important;             /* Resetta i 500rem di pura follia */
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 250px auto 0px auto !important; /* Spostamento massiccio verso il basso */
+    padding: 0 !important;
 }
 
 body.mode-2v2 .opponent-hand .card.back {
-    width: 3.5rem !important; /* Rimpicciolite */
-    height: 5rem !important;
+    width: 4rem !important;
+    height: 5.5rem !important;
+}
+
+body.mode-2v2 .opponent-hand {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: -10px !important; /* Sovrapposizione controllata delle carte */
 }
 
 /* Mano del Giocatore su Mobile 2v2 */
