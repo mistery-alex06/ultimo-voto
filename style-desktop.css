@@ -940,19 +940,7 @@ body {
     opacity: 0.5;
 }
 
-/* 2v2 Specific Layout Adjustments */
-@media (min-width: 769px) {
-    body.mode-2v2 .player-stats {
-        width: 20rem;
-        max-width: 20rem;
-        padding: 0.8rem 1rem;
-    }
 
-    body.mode-2v2 .deck-container {
-        left: clamp(1rem, 3vw, 3rem);
-        /* Move far left, under Giocatore 1 */
-    }
-}
 
 #thinking-indicator {
     position: absolute;

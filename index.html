@@ -7,6 +7,8 @@
     <title>Guerra all'Ultimo Voto</title>
     <link rel="stylesheet" href="style-desktop.css" media="screen and (min-width: 1081px)">
     <link rel="stylesheet" href="style-mobile.css" media="screen and (max-width: 1080px)">
+    <link rel="stylesheet" href="style-2v2-desktop.css" media="screen and (min-width: 1081px)">
+    <link rel="stylesheet" href="style-2v2-mobile.css" media="screen and (max-width: 1080px)">
     <link rel="icon" type="image/png" href="guv.png">
 </head>
 
@@ -43,7 +45,7 @@
                 <div class="modes-col" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                     <h3>Scegli Modalità</h3>
                     <button class="btn-restart" onclick="window.startGame('1v1')">Offline 1v1</button>
-                    <button class="btn-restart" onclick="window.startGame('2v2')" style="margin: 10px 0;">Offline
+                    <button class="btn-restart" onclick="window.startGame2v2()" style="margin: 10px 0;">Offline
                         2v2</button>
                     <button class="btn-restart" onclick="window.onOnlineMode()"
                         style="background: var(--secondary);">Multiplayer Online</button>
@@ -84,8 +86,8 @@
         <div class="hand-container">
             <div class="controls-group">
                 <div id="player-potions"></div>
-                <button id="btn-attack" onclick="window.onAttackClicked()" style="display:none">ATTACCA</button>
-                <button id="btn-pass" onclick="window.onPassClicked()" style="display:none">PASSA</button>
+                <button id="btn-attack" onclick="window.gameModeContext() === '2v2' ? window.onAttack2v2Clicked() : window.onAttackClicked()" style="display:none">ATTACCA</button>
+                <button id="btn-pass" onclick="window.gameModeContext() === '2v2' ? window.onPass2v2Clicked() : window.onPassClicked()" style="display:none">PASSA</button>
             </div>
             <div class="hand" id="player-hand"></div>
         </div>
@@ -121,6 +123,10 @@
     <script src="audio-manager.js"></script>
     <script src="multiplayer.js"></script>
     <script src="engine.js"></script>
+    <script src="engine-2v2.js"></script>
+    <script>
+        window.gameModeContext = () => document.body.classList.contains('mode-2v2') ? '2v2' : '1v1';
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,106 @@
+/* =========================================
+   GUERRA ALL'ULTIMO VOTO - 2V2 DESKTOP CSS
+   Questo file si attiva solo su desktop (min-width: 1081px)
+   e solo quando il body ha la classe .mode-2v2
+   ========================================= */
+
+/* Disposizione Scoreboard per 2v2 */
+/* TARGETING SYSTEM 2V2 */
+.player-stats.valid-target-buff {
+    box-shadow: 0 0 15px #22c55e, inset 0 0 10px rgba(34, 197, 94, 0.3);
+    border-color: #22c55e !important;
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+.player-stats.valid-target-attack {
+    box-shadow: 0 0 20px #ef4444;
+    border-color: #ef4444 !important;
+    cursor: pointer;
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.player-stats.valid-target-ai {
+    box-shadow: 0 0 20px #a855f7; /* VIOLA */
+    border-color: #a855f7 !important;
+    cursor: pointer;
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.player-stats.valid-target-neutral {
+    box-shadow: 0 0 20px #3b82f6;
+    border-color: #3b82f6 !important;
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+body.mode-2v2 .player-stats {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto !important; /* FORZA IL CLIC */
+    position: relative;
+    z-index: 10;
+}
+
+body.mode-2v2 .player-stats.defeated {
+    opacity: 0.3;
+}
+
+body.mode-2v2 .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+body.mode-2v2 .team-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    pointer-events: auto !important;
+}
+
+/* Ottimizzazione dimensioni per far spazio a 4 schede */
+body.mode-2v2 .player-stats {
+    width: 20rem;
+    max-width: 20rem;
+    padding: 0.8rem 1rem;
+    transform: scale(0.95);
+    transform-origin: top left;
+    margin-bottom: 0;
+}
+
+body.mode-2v2 .team-b .player-stats {
+    transform-origin: top right;
+}
+
+/* Opponent Hand (Mani avversarie in 2v2)
+   Dal momento che ci sono 2 prof, ridimensioniamo leggermente
+   le carte sul retro per non coprire troppo lo schermo */
+body.mode-2v2 .opponent-hand-container {
+    top: 0.5rem; /* Spostate un po' più in alto */
+}
+
+body.mode-2v2 .opponent-hand .card.back {
+    width: 4.2rem; /* Leggermente più grandi */
+    height: 6rem;
+    margin-top: -10px; /* Ulteriore spostamento verso l'alto */
+}
+
+/* Mazzo di carte (Deck) in 2v2 */
+body.mode-2v2 .deck-container {
+    transform: translateY(-50%) scale(0.75); /* Leggermente più piccolo per sicurezza */
+    left: -4rem !important; /* Spostato ulteriormente a sinistra fuori dall'arena centrale */
+}
+
+/* Abbassamento pulsanti e controlli */
+body.mode-2v2 .controls-group {
+    margin-bottom: 1rem !important; /* Ridotto per abbassare il gruppo */
+    transform: translateY(2rem); /* Spostamento fisico verso il basso */
+}
+
+body.mode-2v2 .hand-container {
+    padding-bottom: 0.5rem !important;
+}
+

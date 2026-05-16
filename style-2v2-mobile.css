@@ -1,0 +1,118 @@
+/* =========================================
+   GUERRA ALL'ULTIMO VOTO - 2V2 MOBILE CSS
+   Questo file si attiva solo su mobile (max-width: 1080px)
+   e solo quando il body ha la classe .mode-2v2
+   ========================================= */
+
+/* Scoreboard Mobile 2v2: Due colonne (Team A e Team B) */
+body.mode-2v2 .scoreboard {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    align-items: flex-start !important;
+    padding: 5px !important;
+    width: 100vw !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    gap: 5px !important;
+}
+
+body.mode-2v2 .team-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    flex: 1;
+    pointer-events: auto !important;
+}
+
+/* Rimpicciolimento drastico per schermi piccoli */
+body.mode-2v2 .player-stats {
+    width: 100% !important;
+    max-width: 45vw !important;
+    padding: 6px !important;
+    font-size: 0.6rem !important;
+    transform: none !important;
+    margin: 0 !important;
+    border-radius: 6px !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+}
+
+body.mode-2v2 .player-stats .stat-row {
+    font-size: 0.65rem !important;
+}
+
+body.mode-2v2 .progress-bar-bg {
+    height: 6px !important;
+}
+
+body.mode-2v2 .progress-bar-bg.small-bar {
+    height: 3px !important;
+}
+
+/* Arena Mobile 2v2: Griglia 2x2 */
+body.mode-2v2 #played-cards-area {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-top: 10px !important;
+}
+
+/* Ordinamento: Prof sopra, Player sotto */
+/* P1 e P2 sono i primi nel DOM (Human) -> row 2 */
+/* P3 e P4 sono gli ultimi nel DOM (AI) -> row 1 */
+body.mode-2v2 .played-card-slot:nth-child(1),
+body.mode-2v2 .played-card-slot:nth-child(2) {
+    grid-row: 2;
+}
+
+body.mode-2v2 .played-card-slot:nth-child(3),
+body.mode-2v2 .played-card-slot:nth-child(4) {
+    grid-row: 1;
+}
+
+body.mode-2v2 .played-card-slot {
+    width: 70px !important;
+    height: 100px !important;
+}
+
+body.mode-2v2 .played-card-slot .card {
+    width: 70px !important;
+    height: 100px !important;
+    padding: 5px !important;
+    border-radius: 10px !important;
+}
+
+body.mode-2v2 .card-name {
+    font-size: 0.5rem !important;
+}
+
+body.mode-2v2 .card-desc {
+    display: none !important; /* Nascondiamo la descrizione su mobile per risparmiare spazio nell'arena */
+}
+
+/* Glow Targeting su Mobile */
+.player-stats.valid-target-buff {
+    box-shadow: 0 0 10px #22c55e !important;
+    border: 2px solid #22c55e !important;
+}
+
+.player-stats.valid-target-ai {
+    box-shadow: 0 0 10px #a855f7 !important;
+    border: 2px solid #a855f7 !important;
+}
+
+/* Altri aggiustamenti mobile */
+body.mode-2v2 .controls-group {
+    gap: 0.5rem !important;
+}
+
+body.mode-2v2 #btn-attack, 
+body.mode-2v2 #btn-pass {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.7rem !important;
+}

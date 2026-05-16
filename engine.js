@@ -44,20 +44,15 @@ class Game {
 
         this.players = {
             player1: createPlayer('player1', sessionStorage.getItem('username') || 'Giocatore 1', false, 'A', personalities['player1']),
-            player2: createPlayer('player2', mode === '1v1' && !isMultiplayer ? 'AI Prof' : 'Giocatore 2', mode === '1v1' && !isMultiplayer, mode === '1v1' ? 'B' : 'A', personalities['player2'])
+            player2: createPlayer('player2', !isMultiplayer ? 'AI Prof' : 'Giocatore 2', !isMultiplayer, 'B', personalities['player2'])
         };
-
-        if (mode === '2v2') {
-            this.players.player3 = createPlayer('player3', 'AI Prof 1', true, 'B', personalities['player3']);
-            this.players.player4 = createPlayer('player4', 'AI Prof 2', true, 'B', personalities['player4']);
-        }
 
         this.teams = {
-            'A': mode === '1v1' ? ['player1'] : ['player1', 'player2'],
-            'B': mode === '1v1' ? ['player2'] : ['player3', 'player4']
+            'A': ['player1'],
+            'B': ['player2']
         };
 
-        this.turnOrder = mode === '1v1' ? ['player1', 'player2'] : ['player1', 'player2', 'player3', 'player4'];
+        this.turnOrder = ['player1', 'player2'];
         this.turnIndex = 0;
         this.turn = this.turnOrder[this.turnIndex];
 
@@ -243,16 +238,6 @@ class Game {
         let target = targetId ? this.players[targetId] : this.getDefaultTarget(player, card);
         this.addToLog(`${player.name} gioca: ${card.name} su ${target ? target.name : "Nessuno"}`);
         let synergyMult = 1;
-        if (this.gameMode === '2v2') {
-            const allyId = this.teams[player.team].find(id => id !== playerId);
-            if (allyId && this.players[allyId].state === 'alive') {
-                const allyLastCard = this.lastCardPlayedInTurn[allyId];
-                if (allyLastCard && allyLastCard.round === this.gameRound && allyLastCard.card.type === card.type) {
-                    this.addToLog(`Sinergia di Squadra! +20% efficacia per ${player.name}`);
-                    synergyMult += 0.2;
-                }
-            }
-        }
         this.lastCardPlayedInTurn[playerId] = { card: card, round: this.gameRound };
         if (target) this.applyEffect(player, target, card, synergyMult);
         this.lastCardPlayed = card;
@@ -627,6 +612,8 @@ window.startGame = function (forcedMode = null, isMultiplayer = false, p1Name = 
     game.onAnimation = playActionAnimation;
     game.onParticle = spawnDamageParticles;
 
+    document.body.classList.remove('mode-1v1', 'mode-2v2');
+    document.body.classList.add('mode-' + mode);
     document.body.classList.add('in-game');
     window.dispatchEvent(new Event('resize'));
     updateUI();
@@ -653,25 +640,10 @@ window.onTargetClicked = (id) => {
 window.onCardClicked = (idx) => {
     if (targetingMode) return;
     
-    // Auto-Targeting in 1v1 mode
-    if (game.gameMode === '1v1') {
-        const card = game.players[game.turn].hand[idx];
-        // Heuristic to determine if card is positive or negative
-        const isPositive = (card.targetType === 'ally' || card.targetType === 'self' || 
-                          (card.effect && (card.effect.atk || card.effect.def || card.effect.life || 
-                           card.effect.atkMultiplier || card.effect.nextAtkMultiplier || 
-                           card.effect.lowLifeAtk || card.effect.immunity || card.effect.directDamageImmunity)));
-        
-        const targetId = isPositive ? 'player1' : 'player2';
-        game.playCard(game.turn, idx, targetId);
-        updateUI();
-        if (game.isMultiplayer && typeof updateGameState === 'function') updateGameState(game.getSerializableState());
-    } else {
-        selectedCardIndex = idx; 
-        targetingMode = true; 
-        targetingAttack = false; 
-        updateUI();
-    }
+    selectedCardIndex = idx; 
+    targetingMode = true; 
+    targetingAttack = false; 
+    updateUI();
 };
 
 // --- MULTIPLAYER ONLINE ---
@@ -782,6 +754,12 @@ function updateUI() {
 
 function buildScoreboard() {
     elements.scoreboard.innerHTML = '';
+    
+    const teamA = document.createElement('div');
+    teamA.className = 'team-container team-a';
+    const teamB = document.createElement('div');
+    teamB.className = 'team-container team-b';
+
     Object.values(game.players).forEach(p => {
         const div = document.createElement('div');
         div.className = `player-stats ${p.team === 'B' ? 'opponent' : ''} ${p.state === 'defeated' ? 'defeated' : ''} ${targetingMode ? 'valid-target' : ''}`;
@@ -806,8 +784,16 @@ function buildScoreboard() {
                 ${Math.floor(p.hp)} HP | <span style="color:var(--atk-color)">ATK ${p.atk}</span> | <span style="color:var(--def-color)">DEF ${p.def}</span>
             </div>
         `;
-        elements.scoreboard.appendChild(div);
+        
+        if (p.team === 'A') {
+            teamA.appendChild(div);
+        } else {
+            teamB.appendChild(div);
+        }
     });
+
+    elements.scoreboard.appendChild(teamA);
+    elements.scoreboard.appendChild(teamB);
 }
 
 function buildArena() {
