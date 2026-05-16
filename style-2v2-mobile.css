@@ -31,12 +31,13 @@ body.mode-2v2 .team-container {
 body.mode-2v2 .player-stats {
     width: 100% !important;
     max-width: 45vw !important;
-    padding: 6px !important;
+    padding: 4px 6px !important;
     font-size: 0.6rem !important;
     transform: none !important;
     margin: 0 !important;
     border-radius: 6px !important;
     background: rgba(0, 0, 0, 0.8) !important;
+    max-height: 85px !important;
 }
 
 body.mode-2v2 .player-stats .stat-row {
