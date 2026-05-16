@@ -405,9 +405,19 @@ function updateUI2v2() {
 
     const attackBtn = document.getElementById('btn-attack');
     const passBtn = document.getElementById('btn-pass');
+    const potionsContainer = document.querySelector('.potions-container');
 
-    if (attackBtn) attackBtn.style.display = (!active.isAI && active.atk > 0 && !targeting2v2Mode) ? 'flex' : 'none';
-    if (passBtn) passBtn.style.display = (!active.isAI && !targeting2v2Mode) ? 'flex' : 'none';
+    const canInteract = !active.isAI && !targeting2v2Mode;
+
+    if (attackBtn) {
+        attackBtn.style.display = (canInteract && active.atk > 0 && active.status.stunned === 0) ? 'flex' : 'none';
+    }
+    if (passBtn) {
+        passBtn.style.display = canInteract ? 'flex' : 'none';
+    }
+    if (potionsContainer) {
+        potionsContainer.style.display = canInteract ? 'flex' : 'none';
+    }
 
     renderHands2v2(active);
     renderPotions2v2(active);

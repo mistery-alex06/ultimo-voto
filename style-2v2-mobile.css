@@ -60,7 +60,7 @@ body.mode-2v2 #played-cards-area {
     gap: 10px !important;
     width: 100% !important;
     padding: 10px !important;
-    margin-top: 20px !important; 
+    margin-top: 20px !important;
 }
 
 /* Ordinamento: Prof sopra, Player sotto */
@@ -78,13 +78,16 @@ body.mode-2v2 .played-card-slot:nth-child(4) {
 
 /* Mano Avversaria (AI Prof) su Mobile 2v2 - CORRETTA E IN FLUSSO */
 body.mode-2v2 .opponent-hand-container {
-    position: relative !important; /* Basta trucchi volanti assoluti! */
-    top: 0 !important;             /* Resetta i 500rem di pura follia */
+    position: relative !important;
+    /* Basta trucchi volanti assoluti! */
+    top: 0 !important;
+    /* Resetta i 500rem di pura follia */
     width: 100% !important;
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    margin: 250px auto 0px auto !important; /* Spostamento massiccio verso il basso */
+    margin: 250px auto 0px auto !important;
+    /* Spostamento massiccio verso il basso */
     padding: 0 !important;
 }
 
@@ -97,12 +100,14 @@ body.mode-2v2 .opponent-hand {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: -10px !important; /* Sovrapposizione controllata delle carte */
+    gap: -10px !important;
+    /* Sovrapposizione controllata delle carte */
 }
 
 /* Mano del Giocatore su Mobile 2v2 */
 body.mode-2v2 .hand .card {
-    width: 5.5rem !important; /* Ingrandite leggermente */
+    width: 5.5rem !important;
+    /* Ingrandite leggermente */
     height: 8rem !important;
     padding: 0.6rem !important;
 }
@@ -113,11 +118,13 @@ body.mode-2v2 .card-name {
 
 body.mode-2v2 .card-desc {
     font-size: 0.5rem !important;
-    display: block !important; /* Ripristiniamo la descrizione leggibile */
+    display: block !important;
+    /* Ripristiniamo la descrizione leggibile */
 }
 
 body.mode-2v2 .card-illustration {
-    height: 35px !important; /* Disegno più grande */
+    height: 35px !important;
+    /* Disegno più grande */
 }
 
 body.mode-2v2 .card-illustration svg {
@@ -149,14 +156,92 @@ body.mode-2v2 .played-card-slot .card {
     border: 2px solid #a855f7 !important;
 }
 
-/* Altri aggiustamenti mobile */
+/* Spostamento Controlli Giocatore a Sinistra per liberare l'arena */
+body.mode-2v2 .hand-container {
+    display: block !important;
+    position: static !important;
+}
+
 body.mode-2v2 .controls-group {
-    gap: 0.5rem !important;
-    margin-bottom: 0.5rem !important;
+    position: fixed !important;
+    left: 8px !important;
+    top: 65% !important; /* Posizionati a lato dell'arena/mano */
+    transform: translateY(-50%) !important;
+    display: flex !important;
+    flex-direction: column !important; /* Colonnina verticale */
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    z-index: 5000 !important;
+    width: auto !important;
+    background: transparent !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 body.mode-2v2 #btn-attack, 
 body.mode-2v2 #btn-pass {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.7rem !important;
+    width: 70px !important; /* Più stretti e compatti */
+    height: 35px !important;
+    padding: 0 !important;
+    font-size: 0.6rem !important;
+    border-radius: 6px !important;
+    margin: 0 !important;
+    display: flex; /* Rimosso !important per permettere al JS di nasconderli */
+    justify-content: center !important;
+    align-items: center !important;
+    text-transform: uppercase !important;
+    font-weight: 800 !important;
+}
+
+/* Pulsante Attacca Rosso per visibilità */
+body.mode-2v2 #btn-attack {
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%) !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4) !important;
+    color: white !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+/* Pulsante Passa Verde per visibilità */
+body.mode-2v2 #btn-pass {
+    background: linear-gradient(135deg, #22c55e 0%, #166534 100%) !important;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.4) !important;
+    color: white !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+body.mode-2v2 .potions-container {
+    display: flex !important;
+    flex-direction: column !important; /* Pozioni una sotto l'altra */
+    gap: 5px !important;
+    padding: 0 !important;
+    margin-top: 5px !important;
+}
+
+body.mode-2v2 .potion {
+    width: 2rem !important;
+    height: 2.8rem !important;
+    margin: 0 !important;
+}
+
+/* Arena Centrale Pulita */
+body.mode-2v2 .arena {
+    margin: 0 auto !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+body.mode-2v2 #played-cards-area {
+    margin-top: 20px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+body.mode-2v2 .hand {
+    margin-top: 10px !important;
+    width: 100% !important;
+    justify-content: center !important;
 }
