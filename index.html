@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guerra all'Ultimo Voto</title>
-    <link rel="stylesheet" href="style-desktop.css" media="screen and (min-width: 1081px)">
-    <link rel="stylesheet" href="style-mobile.css" media="screen and (max-width: 1080px)">
-    <link rel="stylesheet" href="style-2v2-desktop.css" media="screen and (min-width: 1081px)">
-    <link rel="stylesheet" href="style-2v2-mobile.css" media="screen and (max-width: 1080px)">
-    <link rel="icon" type="image/png" href="guv.png">
+    <link rel="stylesheet" href="../css/css desktop/style-desktop.css" media="screen and (min-width: 1081px)">
+    <link rel="stylesheet" href="../css/css mobile/style-mobile.css" media="screen and (max-width: 1080px)">
+    <link rel="stylesheet" href="../css/css desktop/style-2v2-desktop.css" media="screen and (min-width: 1081px)">
+    <link rel="stylesheet" href="../css/css mobile/style-2v2-mobile.css" media="screen and (max-width: 1080px)">
+    <link rel="icon" type="image/png" href="../guv.png">
 </head>
 
 <body>
@@ -118,12 +118,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
 
     <!-- Librerie di Gioco -->
-    <script src="cards.js"></script>
-    <script src="potions.js"></script>
-    <script src="audio-manager.js"></script>
-    <script src="multiplayer.js"></script>
-    <script src="engine.js"></script>
-    <script src="engine-2v2.js"></script>
+    <script src="../js/data/cards.js"></script>
+    <script src="../js/data/potions.js"></script>
+    <script src="../js/core/audio-manager.js"></script>
+    <script src="../js/core/multiplayer.js"></script>
+    <script src="../js/core/engine.js"></script>
+    <script src="../js/core/engine-2v2.js"></script>
     <script>
         window.gameModeContext = () => document.body.classList.contains('mode-2v2') ? '2v2' : '1v1';
     </script>
