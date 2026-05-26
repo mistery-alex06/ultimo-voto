@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guerra all'Ultimo Voto</title>
+    <link rel="stylesheet" href="style-desktop.css" media="screen and (min-width: 1081px)">
+    <link rel="stylesheet" href="style-mobile.css" media="screen and (max-width: 1080px)">
+    <link rel="stylesheet" href="style-2v2-desktop.css" media="screen and (min-width: 1081px)">
+    <link rel="stylesheet" href="style-2v2-mobile.css" media="screen and (max-width: 1080px)">
+    <link rel="icon" type="image/png" href="guv.png">
+</head>
+
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="overlay active-screen-flex">
+        <div class="modal">
+            <h1>Guerra all'Ultimo Voto</h1>
+            <p>Inserisci il tuo nome per giocare</p>
+            <input type="text" id="username-input" placeholder="Nome utente..." maxlength="15">
+            <button id="login-btn" class="btn-restart" onclick="window.onLoginSubmit()">ENTRA</button>
+        </div>
+    </div>
+
+    <!-- LOBBY CONTAINER -->
+    <div id="lobby-container" class="overlay">
+        <div class="modal lobby-window">
+            <div class="lobby-grid">
+                <!-- SINISTRA: Classifica -->
+                <div class="leaderboard-col" style="flex: 1;">
+                    <h3>Classifica Globale</h3>
+                    <table id="leaderboard-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>W</th>
+                                <th>L</th>
+                            </tr>
+                        </thead>
+                        <tbody><!-- Sincronizzata da JS --></tbody>
+                    </table>
+                </div>
+                <!-- DESTRA: Bottoni -->
+                <div class="modes-col" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                    <h3>Scegli Modalità</h3>
+                    <button class="btn-restart" onclick="window.startGame('1v1')">Offline 1v1</button>
+                    <button class="btn-restart" onclick="window.startGame2v2()" style="margin: 10px 0;">Offline
+                        2v2</button>
+                    <button class="btn-restart" onclick="window.onOnlineMode()"
+                        style="background: var(--secondary);">Multiplayer Online</button>
+                    <button class="btn-restart" onclick="window.logoutUser()"
+                        style="background: #ff4444; margin-top: 20px; font-size: 0.8rem;">ESCI</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME CONTAINER -->
+    <div class="game-container hidden">
+        <div class="theme-selector">
+            <button onclick="document.body.setAttribute('data-theme', 'dark')" title="Dark Mode">🌌</button>
+            <button onclick="document.body.setAttribute('data-theme', 'light')" title="Light Mode">☀️</button>
+            <button onclick="document.body.setAttribute('data-theme', 'cyberpunk')" title="Cyberpunk">🤖</button>
+            <button onclick="document.body.setAttribute('data-theme', 'nature')" title="Nature">🌿</button>
+            <button onclick="document.body.setAttribute('data-theme', 'sunset')" title="Sunset">🌅</button>
+            <button onclick="document.body.setAttribute('data-theme', 'ocean')" title="Ocean">🌊</button>
+            <button onclick="document.body.setAttribute('data-theme', 'midnight')" title="Midnight">🌙</button>
+            <button onclick="document.body.setAttribute('data-theme', 'desert')" title="Desert">🏜️</button>
+        </div>
+        <div class="scoreboard" id="scoreboard"></div>
+        <div class="opponent-hand-container">
+            <div class="opponent-hand" id="opponent-hand"></div>
+        </div>
+
+        <div class="arena">
+            <div class="deck-container">
+                <div class="deck-count" id="deck-count">0</div>
+            </div>
+            <div class="played-cards" id="played-cards-area"></div>
+        </div>
+        <div class="log-panel">
+            <div class="log-title">LOG</div>
+            <div class="log-content" id="log-content"></div>
+        </div>
+        <div class="hand-container">
+            <div class="controls-group">
+                <div id="player-potions"></div>
+                <button id="btn-attack" onclick="window.gameModeContext() === '2v2' ? window.onAttack2v2Clicked() : window.onAttackClicked()" style="display:none">ATTACCA</button>
+                <button id="btn-pass" onclick="window.gameModeContext() === '2v2' ? window.onPass2v2Clicked() : window.onPassClicked()" style="display:none">PASSA</button>
+            </div>
+            <div class="hand" id="player-hand"></div>
+        </div>
+    </div>
+
+    <!-- SETUP OVERLAY -->
+    <div id="setup-overlay" class="overlay hidden">
+        <div class="modal">
+            <h2>Multiplayer</h2>
+            <input type="text" id="room-code-input" placeholder="Codice Stanza">
+            <button id="btn-create-room" onclick="window.createOnlineRoom()">CREA</button>
+            <button id="btn-join-room" onclick="window.joinOnlineRoom()">UNISCITI</button>
+            <button onclick="window.backToLobby()">INDIETRO</button>
+            <div id="room-status"></div>
+        </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="game-over-overlay" class="overlay hidden">
+        <div class="modal">
+            <h1 id="victory-text"></h1>
+            <button onclick="location.reload()">LOBBY</button>
+        </div>
+    </div>
+
+    <!-- Firebase Compat SDK per caricamento locale senza CORS -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+    <!-- Librerie di Gioco -->
+    <script src="cards.js"></script>
+    <script src="potions.js"></script>
+    <script src="audio-manager.js"></script>
+    <script src="multiplayer.js"></script>
+    <script src="engine.js"></script>
+    <script src="engine-2v2.js"></script>
+    <script>
+        window.gameModeContext = () => document.body.classList.contains('mode-2v2') ? '2v2' : '1v1';
+    </script>
+</body>
+
+</html>
