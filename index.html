@@ -2,131 +2,520 @@
 <html lang="it">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guerra all'Ultimo Voto</title>
-    <link rel="stylesheet" href="style-desktop.css" media="screen and (min-width: 1081px)">
-    <link rel="stylesheet" href="style-mobile.css" media="screen and (max-width: 1080px)">
-    <link rel="stylesheet" href="style-2v2-desktop.css" media="screen and (min-width: 1081px)">
-    <link rel="stylesheet" href="style-2v2-mobile.css" media="screen and (max-width: 1080px)">
-    <link rel="icon" type="image/png" href="guv.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Meta Tags -->
+  <title>Aether — Portfolio Creativo & Full-Stack Developer</title>
+  <meta name="description"
+    content="Portfolio di Aether, Full-Stack Developer e UX/UI Designer. Scopri i miei progetti basati su tecnologie web moderne ed estetica premium.">
+  <meta name="keywords" content="Portfolio, Full-Stack Developer, Web Design, HTML, CSS, JavaScript, Glassmorphism">
+  <meta name="author" content="Aether">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Aether — Portfolio Creativo & Full-Stack Developer">
+  <meta property="og:description"
+    content="Progetti web innovativi ed esperienze digitali interattive curate nei minimi dettagli.">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="overlay active-screen-flex">
-        <div class="modal">
-            <h1>Guerra all'Ultimo Voto</h1>
-            <p>Inserisci il tuo nome per giocare</p>
-            <input type="text" id="username-input" placeholder="Nome utente..." maxlength="15">
-            <button id="login-btn" class="btn-restart" onclick="window.onLoginSubmit()">ENTRA</button>
-        </div>
-    </div>
 
-    <!-- LOBBY CONTAINER -->
-    <div id="lobby-container" class="overlay">
-        <div class="modal lobby-window">
-            <div class="lobby-grid">
-                <!-- SINISTRA: Classifica -->
-                <div class="leaderboard-col" style="flex: 1;">
-                    <h3>Classifica Globale</h3>
-                    <table id="leaderboard-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th>W</th>
-                                <th>L</th>
-                            </tr>
-                        </thead>
-                        <tbody><!-- Sincronizzata da JS --></tbody>
-                    </table>
+  <!-- Abstract Background Glows -->
+  <div class="bg-glows" aria-hidden="true">
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <div class="container nav-container">
+      <a href="#hero" class="logo" aria-label="Aether home">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        <span>Aether.</span>
+      </a>
+
+      <nav aria-label="Navigazione principale">
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="#about" class="nav-link">Chi Sono</a></li>
+          <li><a href="#projects" class="nav-link">Progetti</a></li>
+          <li><a href="#experience" class="nav-link">Esperienza</a></li>
+          <li><a href="#contact" class="nav-link">Contatti</a></li>
+          <li>
+            <button class="theme-toggle-btn" id="theme-toggle" aria-label="Attiva/Disattiva scorrimento cromatico (Rosso -> Giallo -> Blu)">
+              <!-- Palette Icon -->
+              <svg class="palette-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"></path>
+                <circle cx="7.5" cy="10.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="11.5" cy="7.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="16.5" cy="9.5" r="1.5" fill="currentColor"></circle>
+                <circle cx="15.5" cy="14.5" r="1.5" fill="currentColor"></circle>
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Apri menu di navigazione" aria-expanded="false"
+        aria-controls="nav-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
+              <line x1="12" y1="22" x2="12" y2="125"></line>
+              <line x1="12" y1="12" x2="22" y2="8.5"></line>
+              <line x1="12" y1="12" x2="2" y2="8.5"></line>
+            </svg>
+            Disponibile per nuovi progetti
+          </div>
+          <h1 class="hero-title">Esperienze Digitali <span>Straordinarie</span></h1>
+          <p class="hero-desc">Sono un Designer e Sviluppatore Full-Stack specializzato nella creazione di interfacce
+            web ad alte prestazioni, con design ricercato ed interazioni fluide.</p>
+          <div class="hero-btns">
+            <a href="#projects" class="btn btn-primary">Guarda i Progetti</a>
+            <a href="#contact" class="btn btn-secondary">Scrivimi</a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <!-- Floating Glow Orb Behind -->
+          <div class="hero-visual-orb"></div>
+          <!-- 3D-like Glassmorphic Card -->
+          <div class="hero-visual-card glass-card">
+            <div class="visual-backdrop"></div>
+            <div class="hero-visual-lines"></div>
+            <div class="visual-badge">Creative Developer</div>
+            <div class="visual-bottom">
+              <h2 class="visual-title">Aether.dev</h2>
+              <p class="visual-subtitle">Scrittura codice pulito & design premium</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about" id="about">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Chi Sono</span>
+          <h2 class="section-title">Design Funzionale & Codice <span>Moderno</span></h2>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-content reveal">
+            <p>Costruisco ponti solidi tra estetica e funzionalità. Credo che ogni sito web debba non solo funzionare
+              alla perfezione, ma anche trasmettere un'emozione visiva immediata tramite interazioni fluide ed un design
+              pulito.</p>
+            <p>Con oltre 5 anni di esperienza nello sviluppo di soluzioni web, offro un approccio completo, curando
+              l'intero ciclo di vita di un prodotto: dalla progettazione dell'interfaccia utente fino alla scrittura del
+              codice finale.</p>
+
+            <div class="about-stats">
+              <div class="stat-item glass-card">
+                <span class="stat-number">5+</span>
+                <span class="stat-label">Anni Exp</span>
+              </div>
+              <div class="stat-item glass-card">
+                <span class="stat-number">40+</span>
+                <span class="stat-label">Progetti</span>
+              </div>
+              <div class="stat-item glass-card">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Clienti Felici</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="skills-wrapper reveal">
+            <!-- Skill Category 1 -->
+            <div class="skill-card glass-card">
+              <h3 class="skill-category-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                Frontend Development
+              </h3>
+              <div class="skill-tags">
+                <span class="skill-tag">HTML5 / CSS3</span>
+                <span class="skill-tag">JavaScript ES6+</span>
+                <span class="skill-tag">TypeScript</span>
+                <span class="skill-tag">React / Next.js</span>
+                <span class="skill-tag">TailwindCSS</span>
+                <span class="skill-tag">Vue.js</span>
+              </div>
+            </div>
+
+            <!-- Skill Category 2 -->
+            <div class="skill-card glass-card">
+              <h3 class="skill-category-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                  <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+                  <path d="M3 12A9 3 0 0 0 21 12"></path>
+                </svg>
+                Backend & Infrastruttura
+              </h3>
+              <div class="skill-tags">
+                <span class="skill-tag">Node.js / Express</span>
+                <span class="skill-tag">REST APIs</span>
+                <span class="skill-tag">PostgreSQL</span>
+                <span class="skill-tag">MongoDB</span>
+                <span class="skill-tag">Firebase</span>
+                <span class="skill-tag">Docker</span>
+              </div>
+            </div>
+
+            <!-- Skill Category 3 -->
+            <div class="skill-card glass-card">
+              <h3 class="skill-category-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z">
+                  </path>
+                  <path
+                    d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z">
+                  </path>
+                </svg>
+                Design & UX/UI
+              </h3>
+              <div class="skill-tags">
+                <span class="skill-tag">Figma</span>
+                <span class="skill-tag">Wireframing</span>
+                <span class="skill-tag">Prototipazione</span>
+                <span class="skill-tag">Motion Design</span>
+                <span class="skill-tag">Branding</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section class="projects" id="projects">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Portfolio</span>
+          <h2 class="section-title">Esplora i Miei <span>Ultimi Lavori</span></h2>
+        </div>
+
+        <div class="projects-grid">
+          <!-- Project 1 -->
+          <article class="project-card glass-card reveal">
+            <div class="project-img-wrapper">
+              <!-- Inline Decorative SVG Pattern for Project Thumbnail -->
+              <div class="project-placeholder">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"></path>
+                  <path d="M9 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-tags">
+                <span class="project-tag">Next.js</span>
+                <span class="project-tag">TypeScript</span>
+                <span class="project-tag">PostgreSQL</span>
+              </div>
+              <h3 class="project-title">Aethera SaaS Dashboard</h3>
+              <p class="project-desc">Una piattaforma SaaS analitica ad alte prestazioni con reportistiche in tempo
+                reale, grafici interattivi e gestione multi-tenant.</p>
+              <a href="#" class="project-link" aria-label="Visualizza progetto Aethera SaaS Dashboard">
+                Esplora
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="project-card glass-card reveal">
+            <div class="project-img-wrapper">
+              <div class="project-placeholder">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                  <line x1="7" y1="2" x2="7" y2="22"></line>
+                  <line x1="17" y1="2" x2="17" y2="22"></line>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <line x1="2" y1="7" x2="7" y2="7"></line>
+                  <line x1="2" y1="17" x2="7" y2="17"></line>
+                  <line x1="17" y1="17" x2="22" y2="17"></line>
+                  <line x1="17" y1="7" x2="22" y2="7"></line>
+                </svg>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-tags">
+                <span class="project-tag">HTML/CSS</span>
+                <span class="project-tag">Three.js</span>
+                <span class="project-tag">Tailwind</span>
+              </div>
+              <h3 class="project-title">Studio d'Architettura Helius</h3>
+              <p class="project-desc">Sito web vetrina immersivo in 3D per uno studio di architettura di lusso.
+                Animazioni scroll-driven e caricamento ultra-rapido.</p>
+              <a href="#" class="project-link" aria-label="Visualizza progetto Studio d'Architettura Helius">
+                Esplora
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="project-card glass-card reveal">
+            <div class="project-img-wrapper">
+              <div class="project-placeholder">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-tags">
+                <span class="project-tag">React Native</span>
+                <span class="project-tag">Firebase</span>
+                <span class="project-tag">UX Design</span>
+              </div>
+              <h3 class="project-title">Nova Fitness App</h3>
+              <p class="project-desc">App mobile per il tracciamento degli allenamenti con algoritmi di raccomandazione
+                ed integrazione con smartwatch.</p>
+              <a href="#" class="project-link" aria-label="Visualizza progetto Nova Fitness App">
+                Esplora
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE SECTION -->
+    <section class="experience" id="experience">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Carriera</span>
+          <h2 class="section-title">La Mia <span>Storia Professionale</span></h2>
+        </div>
+
+        <div class="timeline">
+          <!-- Timeline Item 1 -->
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <div class="timeline-header">
+                <div>
+                  <h3 class="timeline-role">Lead Full-Stack Developer</h3>
+                  <span class="timeline-company">Helix Digital Studio</span>
                 </div>
-                <!-- DESTRA: Bottoni -->
-                <div class="modes-col" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                    <h3>Scegli Modalità</h3>
-                    <button class="btn-restart" onclick="window.startGame('1v1')">Offline 1v1</button>
-                    <button class="btn-restart" onclick="window.startGame2v2()" style="margin: 10px 0;">Offline
-                        2v2</button>
-                    <button class="btn-restart" onclick="window.onOnlineMode()"
-                        style="background: var(--secondary);">Multiplayer Online</button>
-                    <button class="btn-restart" onclick="window.logoutUser()"
-                        style="background: #ff4444; margin-top: 20px; font-size: 0.8rem;">ESCI</button>
+                <span class="timeline-date">2023 - Presente</span>
+              </div>
+              <p class="timeline-desc">Guido un team di 4 sviluppatori per la realizzazione di applicazioni web
+                complesse ed e-commerce di alta gamma. Supervisione dell'architettura software, ottimizzazione SEO e
+                performance Core Web Vitals.</p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 2 -->
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <div class="timeline-header">
+                <div>
+                  <h3 class="timeline-role">Senior Frontend Developer</h3>
+                  <span class="timeline-company">Quantum Tech</span>
                 </div>
+                <span class="timeline-date">2021 - 2023</span>
+              </div>
+              <p class="timeline-desc">Sviluppo di applicazioni a singola pagina (SPA) scalabili con React e Next.js.
+                Progettazione e implementazione di un design system interno in CSS e TypeScript condiviso a livello
+                aziendale.</p>
             </div>
-        </div>
-    </div>
+          </div>
 
-    <!-- GAME CONTAINER -->
-    <div class="game-container hidden">
-        <div class="theme-selector">
-            <button onclick="document.body.setAttribute('data-theme', 'dark')" title="Dark Mode">🌌</button>
-            <button onclick="document.body.setAttribute('data-theme', 'light')" title="Light Mode">☀️</button>
-            <button onclick="document.body.setAttribute('data-theme', 'cyberpunk')" title="Cyberpunk">🤖</button>
-            <button onclick="document.body.setAttribute('data-theme', 'nature')" title="Nature">🌿</button>
-            <button onclick="document.body.setAttribute('data-theme', 'sunset')" title="Sunset">🌅</button>
-            <button onclick="document.body.setAttribute('data-theme', 'ocean')" title="Ocean">🌊</button>
-            <button onclick="document.body.setAttribute('data-theme', 'midnight')" title="Midnight">🌙</button>
-            <button onclick="document.body.setAttribute('data-theme', 'desert')" title="Desert">🏜️</button>
-        </div>
-        <div class="scoreboard" id="scoreboard"></div>
-        <div class="opponent-hand-container">
-            <div class="opponent-hand" id="opponent-hand"></div>
-        </div>
-
-        <div class="arena">
-            <div class="deck-container">
-                <div class="deck-count" id="deck-count">0</div>
+          <!-- Timeline Item 3 -->
+          <div class="timeline-item reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card glass-card">
+              <div class="timeline-header">
+                <div>
+                  <h3 class="timeline-role">UI/UX Designer & Web Developer</h3>
+                  <span class="timeline-company">Freelance</span>
+                </div>
+                <span class="timeline-date">2019 - 2021</span>
+              </div>
+              <p class="timeline-desc">Progettazione wireframe e prototipi ad alta fedeltà in Figma. Sviluppo di siti
+                web aziendali e landing page in HTML, CSS e JavaScript per clienti e startup locali.</p>
             </div>
-            <div class="played-cards" id="played-cards-area"></div>
+          </div>
         </div>
-        <div class="log-panel">
-            <div class="log-title">LOG</div>
-            <div class="log-content" id="log-content"></div>
+      </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag">Contatti</span>
+          <h2 class="section-title">Iniziamo a <span>Collaborare</span></h2>
         </div>
-        <div class="hand-container">
-            <div class="controls-group">
-                <div id="player-potions"></div>
-                <button id="btn-attack" onclick="window.gameModeContext() === '2v2' ? window.onAttack2v2Clicked() : window.onAttackClicked()" style="display:none">ATTACCA</button>
-                <button id="btn-pass" onclick="window.gameModeContext() === '2v2' ? window.onPass2v2Clicked() : window.onPassClicked()" style="display:none">PASSA</button>
+
+        <div class="contact-grid">
+          <div class="contact-info reveal">
+            <ul class="contact-info-list">
+              <li class="contact-info-item">
+                <div class="contact-info-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </div>
+                <div class="contact-info-text">
+                  <h4>Email</h4>
+                  <p><a href="mailto:hello@aether.dev">hello@aether.dev</a></p>
+                </div>
+              </li>
+
+              <li class="contact-info-item">
+                <div class="contact-info-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                    </path>
+                  </svg>
+                </div>
+                <div class="contact-info-text">
+                  <h4>Telefono</h4>
+                  <p><a href="tel:+393331234567">+39 333 123 4567</a></p>
+                </div>
+              </li>
+
+              <li class="contact-info-item">
+                <div class="contact-info-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div class="contact-info-text">
+                  <h4>Posizione</h4>
+                  <p>Milano, Italia (Disponibile remoto)</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <form class="contact-form glass-card reveal" id="contact-form" novalidate>
+            <div class="form-group">
+              <label for="name" class="form-label">Nome Completo</label>
+              <input type="text" id="name" name="name" class="form-input" placeholder="Es. Mario Rossi" required
+                minlength="3">
+              <span class="form-error" id="name-error">Inserisci il tuo nome (almeno 3 caratteri).</span>
             </div>
-            <div class="hand" id="player-hand"></div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Indirizzo Email</label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="Es. mario.rossi@example.com"
+                required>
+              <span class="form-error" id="email-error">Inserisci un indirizzo email valido.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="message" class="form-label">Messaggio</label>
+              <textarea id="message" name="message" class="form-input" placeholder="Raccontami del tuo progetto..."
+                required minlength="10"></textarea>
+              <span class="form-error" id="message-error">Inserisci il tuo messaggio (almeno 10 caratteri).</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Invia Messaggio</button>
+          </form>
         </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <ul class="footer-socials">
+        <li>
+          <a href="#" aria-label="Github Profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+              </path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="LinkedIn Profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Twitter Profile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+              </path>
+            </svg>
+          </a>
+        </li>
+      </ul>
+      <p class="footer-text">© 2026 Aether. Sviluppato con passione e cura dei dettagli.</p>
     </div>
+  </footer>
 
-    <!-- SETUP OVERLAY -->
-    <div id="setup-overlay" class="overlay hidden">
-        <div class="modal">
-            <h2>Multiplayer</h2>
-            <input type="text" id="room-code-input" placeholder="Codice Stanza">
-            <button id="btn-create-room" onclick="window.createOnlineRoom()">CREA</button>
-            <button id="btn-join-room" onclick="window.joinOnlineRoom()">UNISCITI</button>
-            <button onclick="window.backToLobby()">INDIETRO</button>
-            <div id="room-status"></div>
-        </div>
-    </div>
-
-    <!-- GAME OVER -->
-    <div id="game-over-overlay" class="overlay hidden">
-        <div class="modal">
-            <h1 id="victory-text"></h1>
-            <button onclick="location.reload()">LOBBY</button>
-        </div>
-    </div>
-
-    <!-- Firebase Compat SDK per caricamento locale senza CORS -->
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
-
-    <!-- Librerie di Gioco -->
-    <script src="cards.js"></script>
-    <script src="potions.js"></script>
-    <script src="audio-manager.js"></script>
-    <script src="multiplayer.js"></script>
-    <script src="engine.js"></script>
-    <script src="engine-2v2.js"></script>
-    <script>
-        window.gameModeContext = () => document.body.classList.contains('mode-2v2') ? '2v2' : '1v1';
-    </script>
+  <!-- Scripts -->
+  <script src="index.js"></script>
 </body>
 
 </html>
